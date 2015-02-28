@@ -1,37 +1,11 @@
+#!/usr/bin/python
+
 import wiiboard
 import pygame
 import time
 import sys
-import json
 from bluetooth import *
-
-class Storage:
-	def __init__(self):
-		self.path = "data.json"
-		self.currentWeight = 0
-		self.totalWeight = 0
-		self.status = ""
-
-	def formatFloat(self, data):
-		return float("{0:.1f}".format(data))
-
-	def saveToFile(self, data):
-		with open(self.path, "w") as outfile:
-			json.dump(data, outfile, sort_keys = True, indent = 4, separators = (',', ': '))
-
-	def setCurrentWeight(self, weight):
-		self.currentWeight = self.formatFloat(weight)
-
-	def setTotalWeight(self, total):
-		self.totalWeight = self.formatFloat(total)
-
-	def setStatus(self, status):
-		self.status = status
-
-	def save(self):
-		data = {'weightCurrent': self.currentWeight, 'weightTotal': self.totalWeight, 'status': self.status}
-		self.saveToFile(data)
-
+from socketIO_client import SocketIO, LoggingNamespace
 
 
 class CalculateWeight:
@@ -60,6 +34,9 @@ class CalculateWeight:
 				result.append(data[i])
 		return result
 
+	def formatWeight(self, weight):
+		return round(weight, 1)
+
 	def weight(self, data):
 
 		data = self.filterLowReadings(data)
@@ -71,28 +48,44 @@ class CalculateWeight:
 				print "Calculated value " + `data[i]`
 			total += data[i]
 		total = total / len(data)
-		return round(total, 1)
+		return self.formatWeight(total)
 
+
+class WebSocketIO:
+	def __init__(self):
+		self.server = "localhost"
+		self.port = 8080
+		self.socket = SocketIO(self.server, self.port, LoggingNamespace)
+
+	def pushStatus(self, status, message):
+		self.socket.emit('status', {'status': status, 'message': message})
+
+	def pushWeight(self, totalWeight, currentWeight):
+		self.socket.emit('weight', {'totalWeight': totalWeight, 'currentWeight': currentWeight})
 
 
 def main():
 	debug = True
 	sensitivity = 30 #kg
+	#useSocket = False
 
 	calculate = CalculateWeight()
-	storage = Storage()
+	socket = WebSocketIO()
 	pygame.init()
 
+
+	# Scale
 	running = True
 	while(running):
 		# Re initialize each run due to bug in wiiboard
 		board = wiiboard.Wiiboard()
 
-		print "Press the red sync button on the board now"
+		print "Press the red sync button"
+		socket.pushStatus("SYNC", "Press the red sync button")
+
+		# Connect to balance board
 		address = None
 		while (address == None):
-			storage.setStatus("Syncing")
-			storage.save()
 			address = board.discover()
 		board.connect(address)
 
@@ -102,8 +95,7 @@ def main():
 
 		#Measure weight
 		print "Step on me..."
-		storage.setStatus("Ready")
-		storage.save()
+		socket.pushStatus("READY", "Step on me...")
 
 		i = 0
 		done = False
@@ -119,14 +111,13 @@ def main():
 
 						if firstStep:
 							firstStep = False
-							storage.setStatus("Measuring")
-							storage.save()
+							print "Measuring.."
+							socket.pushStatus("MEASURING", "Measuring..")
 
 						total.append(event.mass.totalWeight)
-
-						storage.setTotalWeight(calculate.weight(total))
-						storage.setCurrentWeight(event.mass.totalWeight)
-						storage.save()
+						socket.pushWeight(
+							calculate.weight(total),
+							calculate.formatWeight(event.mass.totalWeight))
 
 						if debug:
 							print "Weight: %.1f kg" % (event.mass.totalWeight)
@@ -138,19 +129,17 @@ def main():
 						done = True
 
 		# Print final weight
-		storage.setStatus("Done")
-		storage.save()
+		print "Thank you!"
+		socket.pushStatus("DONE", "Thank you!")
 
 		totalWeight = calculate.weight(total)
 		print "\nTotal weight: %.1f kg" % (totalWeight)
 
-		# Disconnect and cleanup
+		# Disconnect
 		board.disconnect()
 
+	# Clean up
 	pygame.quit()
-
-
-
 
 
 if __name__ == "__main__":

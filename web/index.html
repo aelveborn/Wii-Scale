@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wii-Scale</title>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Styles -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/assets/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/styles/site.css">
+
+</head>
+<body>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 text-center">
+                <h1 id="status" class="promotion">
+                    Wii-Scale
+                </h1>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="progress">
+                    <div class="progress-bar progress-bar-success"
+                        role="progressbar"
+                        style="width: 0%">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12 col-sm-6">
+                <div class="weight-panel">
+                    <h2>Scale:</h2>
+                    <span class="value" id="weight-current">0</span>
+                    <span class="unit">kg</span>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6">
+                <div class="weight-panel">
+                    <h2>Your weight:</h2>
+                    <span class="value" id="weight-total">0</span>
+                    <span class="unit">kg</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/assets/jquery/dist/cdn/jquery.min.js"></script>
+    <script src="/assets/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/static/scripts/client.js"></script>
+
+</body>
+</html>

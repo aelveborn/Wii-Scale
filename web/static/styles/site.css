@@ -1,0 +1,103 @@
+body {
+	background-color: #fdfdfd;	
+	font-family: 'Open Sans', sans-serif;
+	font-weight: lighter;
+}
+
+h1.promotion {
+	font-size: 5em;
+	margin: 80px 0 120px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: 'Open Sans', sans-serif;
+	font-weight: lighter;
+}
+
+.progress {
+	height: 4px;
+}
+
+.progress,
+.progress-bar {
+	box-shadow: none;
+	-webkit-box-shadow: none;
+	border-radius: 0;
+	-webkit-border-radius: 0;
+}
+
+.popover {
+	width: 100%;
+}
+
+.popover-content {
+	text-align: center;
+}
+
+.weight-panel {
+	margin-top: 40px;
+	text-align: center;
+}
+
+.weight-panel h2 {
+	padding-left: 15px;
+}
+
+.weight-panel .value {
+	font-size: 10em;
+	line-height: 1em;
+}
+
+.weight-panel .unit {
+	color: #C7C7C7;
+	font-size: 6em;
+	line-height: 1em;
+}
+
+@media screen and (min-width: 768px) {
+
+	.weight-panel {
+		text-align: left;
+	}
+
+	.weight-panel .value {
+		font-size: 8em;
+	}
+
+	.weight-panel .unit {
+		font-size: 4em;
+	}
+
+}
+
+@media screen and (min-width: 992px) {
+
+	.weight-panel h2 {
+		padding-left: 15px;
+	}
+
+	.weight-panel .value {
+		font-size: 10em;
+	}
+
+	.weight-panel .unit {
+		font-size: 6em;
+	}
+
+}
+
+@media screen and (min-width: 1200px) {
+
+	.weight-panel h2 {
+		padding-left: 15px;
+	}
+
+	.weight-panel .value {
+		font-size: 12em;
+	}
+
+	.weight-panel .unit {
+		font-size: 8em;
+	}
+
+}
