@@ -34,7 +34,6 @@ io.on('connection', function(socket){
 
 	socket.on('weight', function(data){
 		if(debug) {
-			console.log('Current weight:\t' + data.currentWeight);
 			console.log('Total weight:\t' + data.totalWeight + '\n');
 		}
 

@@ -60,8 +60,8 @@ class WebSocketIO:
 	def pushStatus(self, status, message):
 		self.socket.emit('status', {'status': status, 'message': message})
 
-	def pushWeight(self, totalWeight, currentWeight):
-		self.socket.emit('weight', {'totalWeight': totalWeight, 'currentWeight': currentWeight})
+	def pushWeight(self, totalWeight):
+		self.socket.emit('weight', {'totalWeight': totalWeight})
 
 
 def main():
@@ -115,9 +115,7 @@ def main():
 							socket.pushStatus("MEASURING", "Measuring..")
 
 						total.append(event.mass.totalWeight)
-						socket.pushWeight(
-							calculate.weight(total),
-							calculate.formatWeight(event.mass.totalWeight))
+						socket.pushWeight(calculate.weight(total))
 
 						if debug:
 							print "Weight: %.1f kg" % (event.mass.totalWeight)
