@@ -16,26 +16,28 @@
         var count = 0;
         var complete = 0;
         var progress = 0;
+
+        reset();
     }();
 
-    var reset = function() {
+    function reset() {
         count = 0;
         complete = 300;
         progress = 0;
-    }();
+    };
 
-    var setProgress = function() {
+    function setProgress() {
         if(count < complete) {
             progress = Math.round((count / complete) * 100);
             $('.progress-bar').css('width', progress + '%'); 
         }
     };
 
-    var setPopup = function(message) {
+    function setPopup(message) {
         var popover = $('#status').attr('data-content', message).data('bs.popover');
         popover.setContent();
         popover.$tip.addClass(popover.options.placement);
-    }
+    };
 
     // Socket io
     var socket = io();
@@ -44,13 +46,16 @@
         count++;
         setProgress();
 
-        $('#weight-current').text(data.currentWeight);
         $('#weight-total').text(data.totalWeight);
     });
 
     socket.on('status data', function(data) {
-        console.log(data.status);
         setPopup(data.message);
+
+        if(data.status === "SYNC") {
+            reset();
+            setProgress();
+        }
 
         if(data.status === "DONE") {
             reset();

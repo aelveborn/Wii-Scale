@@ -41,16 +41,17 @@ h1, h2, h3, h4, h5, h6 {
 
 .weight-panel h2 {
 	padding-left: 15px;
+	margin-bottom: 15px;
 }
 
 .weight-panel .value {
-	font-size: 10em;
+	font-size: 8em;
 	line-height: 1em;
 }
 
 .weight-panel .unit {
 	color: #C7C7C7;
-	font-size: 6em;
+	font-size: 4em;
 	line-height: 1em;
 }
 
@@ -61,11 +62,11 @@ h1, h2, h3, h4, h5, h6 {
 	}
 
 	.weight-panel .value {
-		font-size: 8em;
+		font-size: 9em;
 	}
 
 	.weight-panel .unit {
-		font-size: 4em;
+		font-size: 5em;
 	}
 
 }
