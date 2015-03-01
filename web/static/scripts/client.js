@@ -22,12 +22,16 @@
 
     function reset() {
         count = 0;
-        complete = 300;
+        complete = 500;
         progress = 0;
     };
 
+    function done() {
+        return count >= complete
+    }
+
     function setProgress() {
-        if(count < complete) {
+        if(!done()) {
             progress = Math.round((count / complete) * 100);
             $('.progress-bar').css('width', progress + '%'); 
         }
@@ -46,7 +50,9 @@
         count++;
         setProgress();
 
-        $('#weight-total').text(data.totalWeight);
+        if(!done()) {
+            $('#weight-total').text(data.totalWeight);
+        }
     });
 
     socket.on('status data', function(data) {
