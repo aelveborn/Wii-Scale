@@ -9,8 +9,16 @@ app.get('/', function(req, res){
 	res.sendfile('index.html');
 });
 
-
 io.on('connection', function(socket){
+
+	// From Client
+	socket.on('device search', function() {
+		io.emit('sleep', false);
+	});
+
+	socket.on('device sleep', function() {
+		io.emit('sleep', true);
+	});
 
 	// From Wii-Scale
 	socket.on('status', function(data){
@@ -20,6 +28,7 @@ io.on('connection', function(socket){
 	socket.on('weight', function(data){
 		io.emit('weight data', data);
 	});
+
 });
 
 http.listen(8080, function(){

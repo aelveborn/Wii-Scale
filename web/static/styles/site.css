@@ -34,6 +34,19 @@ h1, h2, h3, h4, h5, h6 {
 	text-align: center;
 }
 
+.popover-content h4 {
+	line-height: 1.2em;
+}
+
+.popover-content h6 {
+	padding: 10px 0 0;
+}
+
+.popover-content img {
+	width: 120px;
+	padding: 10px 0 18px;
+}
+
 .weight-panel {
 	margin-top: 40px;
 	text-align: center;
