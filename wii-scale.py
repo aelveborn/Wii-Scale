@@ -9,43 +9,13 @@ from socketIO_client import SocketIO, LoggingNamespace
 
 
 class CalculateWeight:
-	def __init__(self):
-		self.debug = False
-		self.weightPercent = 0.9
-
-	def highestWeight(self, data):
-		i = 0
-		high = 0
-		for i in range(len(data)):
-			if data[i] > high:
-				high = data[i]
-		return high
-
-	def filterLowReadings(self, data):
-		i = 0
-		lowest = 0
-		result = []
-
-		highest = self.highestWeight(data)
-		lowest = highest * self.weightPercent
-
-		for i in range(len(data)):
-			if data[i] >= lowest:
-				result.append(data[i])
-		return result
-
 	def formatWeight(self, weight):
 		return round(weight, 1)
 
 	def weight(self, data):
-
-		data = self.filterLowReadings(data)
-
 		i = 0
 		total = 0
 		for i in range(len(data)):
-			if self.debug:
-				print "Calculated value " + `data[i]`
 			total += data[i]
 		total = total / len(data)
 		return self.formatWeight(total)
@@ -101,6 +71,7 @@ def main():
 		done = False
 		total = []
 		firstStep = True
+		skipReadings = 80
 
 		while(not done):
 			time.sleep(0.05)
@@ -114,8 +85,11 @@ def main():
 							print "Measuring.."
 							socket.pushStatus("MEASURING", "Measuring..")
 
-						total.append(event.mass.totalWeight)
-						socket.pushWeight(calculate.weight(total))
+						# Skips the first readings when the user steps on the balance board
+						skipReadings -= 1
+						if(skipReadings < 0):
+							total.append(event.mass.totalWeight)
+							socket.pushWeight(calculate.weight(total))
 
 						if debug:
 							print "Weight: %.1f kg" % (event.mass.totalWeight)

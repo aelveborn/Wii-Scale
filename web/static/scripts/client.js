@@ -51,7 +51,7 @@
         setProgress();
 
         if(!done()) {
-            $('#weight-total').text(data.totalWeight);
+            $('#weight-total').text(data.totalWeight.toFixed(1));
         }
     });
 
