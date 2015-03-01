@@ -1,9 +1,9 @@
 # Wii-Scale
 
-Wii-Scale turns your Wii Balance Board into a digital scale. Wii-Scale will automaticly find your Wii Balance Board when you press the red button under it. And then you just stand on it :) No boring console interface, watch your weight being calculated in realtime on the webinterface.
+Wii-Scale turns your Wii Balance Board into a digital scale. Wii-Scale will automatically find your Wii Balance Board when you press the red sync button under it. All you have to do is just stand on it :) No boring console interface, watch your weight being calculated in realtime on a beautiful web insterface.
 
 
-![Image of the Wii-Scale web interface](https://dl-web.dropbox.com/get/Public/Wii-Scale-Desktop.png?_subject_uid=5020051&w=AAAgQYDhoBHK6royo2kub_-wl2TpqxM-01-Oxv31M7t-3g)
+![Image of the Wii-Scale web interface](https://lh5.googleusercontent.com/RsUY3uzuUjYNqxs8iS07eaWySbWfK9GUHhAzw-hIVuKY_CkCP6He1zn0HNWp2zfVSrq4ZTrt4AU=w1290-h520)
 
 ## Usage
 
@@ -79,4 +79,4 @@ Based on the [wiiboard-simple](https://code.google.com/p/wiiboard-simple/) libra
 
 ## Lincense
 
-Wii-Scale is created by [Andreas Älveborn](http://aelveborn.com)  and lincensed under MIT. [wiiboard-simple](https://code.google.com/p/wiiboard-simple/)  is licensed under LGPL.
+Wii-Scale is created by [Andreas Älveborn](http://aelveborn.com) automatically and lincensed under MIT. [wiiboard-simple](https://code.google.com/p/wiiboard-simple/)  is licensed under LGPL.
