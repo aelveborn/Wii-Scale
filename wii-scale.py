@@ -35,7 +35,6 @@ class WebSocketIO:
 
 
 def main():
-	debug = True
 	sensitivity = 30 #kg
 	#useSocket = False
 
@@ -90,9 +89,6 @@ def main():
 						if(skipReadings < 0):
 							total.append(event.mass.totalWeight)
 							socket.pushWeight(calculate.weight(total))
-
-						if debug:
-							print "Weight: %.1f kg" % (event.mass.totalWeight)
 
 					if event.mass.totalWeight <= sensitivity and not firstStep:
 						done = True
