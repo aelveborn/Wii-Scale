@@ -1,10 +1,60 @@
-#Usage
+# Wii-Scale
 
-You can use Wii-Scale from the terminal only if you want to. But the prettiest presentation is to use the web interface. The web interface is running on a node.js express server and communicates with the lightning fast WebSocket standard.
+Wii-Scale turns your Wii Balance Board into a digital scale. Wii-Scale will automaticly find your Wii Balance Board when you press the red button under it. And then you just stand on it :) No boring console interface, watch your weight being calculated in realtime on the webinterface.
 
-# Install on Ubuntu / Raspbian
 
-This will only run on Linux and probably works well on a Raspberry Pi with a compatible bluetooth dongle.
+![Image of the Wii-Scale web interface](https://dl-web.dropbox.com/get/Public/Wii-Scale-Desktop.png?_subject_uid=5020051&w=AAAgQYDhoBHK6royo2kub_-wl2TpqxM-01-Oxv31M7t-3g)
+
+## Usage
+
+Each time you whant to measure your weight you'll have to press the red sync button on your Wii Balance Board. That's because it's a real hassle to pair it with your linux machine. Wii-Scale will stay on an listen for your Wii Balance Board and promt you what to do in the web interface.
+
+The weight is calculated by taking the mean of 500 readings. There is also a safe period of 80 readings where you will step on the balance board that are skipped by default. All this to get the best accurate reading as possible. Oh, and all this will take about 3 seconds.
+
+
+## Install
+
+Wii-Scale is based on python and node.js and communicates with the lightning fast WebSocket protocol. 
+
+Wii-Scale requires these  `python` libraries `PyBlueZ`, `pygame`, `socketIO-client`. The web server is running `node.js` and you'll need `npm` installed.
+
+Make the python script executable:
+
+	chmod -x ./Wii-Scale.py
+
+Go to the web folder:
+
+	cd web/
+
+Install all node packages:
+
+	npm install
+
+## Run
+
+Start the web server:
+
+	cd web/
+	npm start
+
+or start the web server with this command if you are running debian:
+
+	nodejs server.js
+
+Go back to the root folder and start Wii-Scale:
+
+	cd ..
+	python Wii-Scale.py
+
+Now the web server and Wii-Scale should be up and running. Point you web browser to [Wii-Scale](http://localhost:8080) and you should see the web interface. Press the red sync button on your Wii Balance Board (lokated inside the battery hatch). It will sync and you should be promted to stand on your board.
+
+
+### Only on Linux
+
+Since Wii-Scale uses BlueZ bluetooth stack it's most likely it will only run on Linux.
+
+## Install on Ubuntu / Raspbian (Not complete)
+
 
 You will need PyBlueZ, python, pygame and socketIO-client to run this.
 
@@ -16,33 +66,17 @@ You will need PyBlueZ, python, pygame and socketIO-client to run this.
 
 	sudo pip install socketIO-client
 
-npm start wont work on debian without installing. You can use the command: nodejs server.js
+`npm start` wont work on debian without installing `nodejs-legacy`.
 
 	sudo apt-get install nodejs-legacy
 
-Install node dependencies
 
-	cd web
-
-	npm install
-
-
-# Run
-
-Start wii-scale
-
-	python wii-scale.py
-
-Start web server
-
-	cd web
-
-	npm start
-
-Web interface
-
-	http://localhost:8080
 
 ## Tribute
 
-Based on the [wiiboard-simple](https://code.google.com/p/wiiboard-simple/) library
+Based on the [wiiboard-simple](https://code.google.com/p/wiiboard-simple/) library.
+
+
+## Lincense
+
+Wii-Scale is created by [Andreas Älveborn](http://aelveborn.com)  and lincensed under MIT. [wiiboard-simple](https://code.google.com/p/wiiboard-simple/)  is licensed under LGPL.
