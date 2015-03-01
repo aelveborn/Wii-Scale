@@ -89,7 +89,9 @@
             case "SLEEP":              
                 reset();
                 setProgress();
-                setPopup(startContent);
+                setTimeout(function() {
+                    setPopup(startContent);
+                }, 1000);
                 break;
         };
     });

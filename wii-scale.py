@@ -52,6 +52,7 @@ class WebSocketIO:
 
 def main():
 	global sleep
+	print "Wii-Scale started"
 
 	calculate = CalculateWeight()
 	socket = WebSocketIO()
