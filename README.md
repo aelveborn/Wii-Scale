@@ -79,4 +79,4 @@ Based on the [wiiboard-simple](https://code.google.com/p/wiiboard-simple/) libra
 
 ## Lincense
 
-Wii-Scale is created by [Andreas Älveborn](http://aelveborn.com) automatically and lincensed under MIT. [wiiboard-simple](https://code.google.com/p/wiiboard-simple/)  is licensed under LGPL.
+Wii-Scale is created by [Andreas Älveborn](http://aelveborn.com) and lincensed under MIT. [wiiboard-simple](https://code.google.com/p/wiiboard-simple/)  is licensed under LGPL.
