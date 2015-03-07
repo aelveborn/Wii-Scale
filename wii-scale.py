@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import wiiboard
+import lib.wiiboard
 import pygame
 import time
 import sys
