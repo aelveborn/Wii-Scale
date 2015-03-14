@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+
 # Author: Andreas Älveborn
 # URL: https://github.com/aelveborn/Wii-Scale
 #
