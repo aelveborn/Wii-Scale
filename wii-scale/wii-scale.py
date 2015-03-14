@@ -1,9 +1,10 @@
 #!/usr/bin/python
 
-import lib.wiiboard
+import wiiboard
 import pygame
 import time
 import sys
+
 from bluetooth import *
 from socketIO_client import SocketIO, LoggingNamespace
 
@@ -32,19 +33,19 @@ class CalculateWeight:
 class WebSocketIO:
 	def __init__(self):
 		self.socketIO = SocketIO(server, port, LoggingNamespace)
-		self.socketIO.on('sleep', self.responseSleep)
+		self.socketIO.on('sleep', self.receive_sleep)
 
 	def wait(self):
-		self.socketIO.wait(seconds=1)
+		self.socketIO.wait(seconds = 1)
 
-	def pushStatus(self, status):
+	def send_status(self, status):
 		self.socketIO.emit('status', {'status': status})
 
-	def pushWeight(self, totalWeight):
+	def send_weight(self, totalWeight):
 		self.socketIO.emit('weight', {'totalWeight': totalWeight})
 
 	# Accepts True or False as argument
-	def responseSleep(self, *args):
+	def receive_sleep(self, *args):
 		global sleep
 		if isinstance(args[0], bool):
 			sleep = args[0]
@@ -68,7 +69,7 @@ def main():
 
 		# Re initialize each run due to bug in wiiboard
 		board = wiiboard.Wiiboard()
-		socket.pushStatus("SYNC")
+		socket.send_status("SYNC")
 
 		# Connect to balance board
 		address = board.discover()
@@ -81,7 +82,7 @@ def main():
 			board.setLight(True)
 
 			#Measure weight
-			socket.pushStatus("READY")
+			socket.send_status("READY")
 
 			i = 0
 			done = False
@@ -98,13 +99,13 @@ def main():
 
 							if firstStep:
 								firstStep = False
-								socket.pushStatus("MEASURING")
+								socket.send_status("MEASURING")
 
 							# Skips the first readings when the user steps on the balance board
 							skipReadings -= 1
 							if(skipReadings < 0):
 								total.append(event.mass.totalWeight)
-								socket.pushWeight(calculate.weight(total))
+								socket.send_weight(calculate.weight(total))
 
 						if event.mass.totalWeight <= sensitivity and not firstStep:
 							done = True
@@ -114,7 +115,7 @@ def main():
 
 		# Done
 		sleep = True
-		socket.pushStatus("SLEEP")
+		socket.send_status("SLEEP")
 
 		# Disconnect
 		board.disconnect()
