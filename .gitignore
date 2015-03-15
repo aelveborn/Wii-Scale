@@ -31,7 +31,7 @@ web/build/Release
 
 # Dependency directory
 # https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
-web/node_modules
+node_modules/
 
 # Byte-compiled / optimized / DLL files
 web/__pycache__/

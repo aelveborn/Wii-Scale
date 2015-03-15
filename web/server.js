@@ -32,12 +32,14 @@
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var host = process.env.npm_package_config_host;
+var port = process.env.npm_package_config_port;
 
-app.use('/static', require('express').static(__dirname + '/static'));
-app.use('/assets', require('express').static(__dirname + '/node_modules'));
+app.use('/static', require('express').static('web/static'));
+app.use('/assets', require('express').static('node_modules'));
 
 app.get('/', function(req, res){
-	res.sendfile('index.html');
+	res.sendfile('web/index.html');
 });
 
 io.on('connection', function(socket){
@@ -62,6 +64,8 @@ io.on('connection', function(socket){
 
 });
 
-http.listen(8080, function(){
-	console.log('Listening on localhost:8080');
-});
+exports.start = function() {
+	http.listen(port, host, function(){
+		console.log('Listening on ' + host + ':' + port);
+	});
+}

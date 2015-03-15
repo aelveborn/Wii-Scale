@@ -34,6 +34,7 @@ import wiiboard
 import pygame
 import time
 import sys
+import getopt
 
 from bluetooth import *
 from socketIO_client import SocketIO, LoggingNamespace
@@ -44,7 +45,7 @@ sleep = True
 sensitivity = 30 #kg
 
 port = 8080
-server = "localhost"
+host = "localhost"
 
 
 class CalculateWeight:
@@ -62,7 +63,7 @@ class CalculateWeight:
 
 class WebSocketIO:
 	def __init__(self):
-		self.socketIO = SocketIO(server, port, LoggingNamespace)
+		self.socketIO = SocketIO(host, port, LoggingNamespace)
 		self.socketIO.on('sleep', self.receive_sleep)
 
 	def wait(self):
@@ -81,8 +82,30 @@ class WebSocketIO:
 			sleep = args[0]
 
 
-def main():
+def main(argv):
 	global sleep
+
+	try:
+		opts, args = getopt.getopt(argv, "hs:p:", ["server=", "port="])
+	except getopt.GetoptError:
+		print "wii-scale.py -s <host> -p <port>"
+		sys.exit(2)
+
+	for opt, arg in opts:
+		if opt in ("-h", "--help"):
+			print "wii-scale.py -s <host> -p <port>"
+			sys.exit(2)
+		elif opt in ("-s", "--server"):
+			global host
+			host = arg
+		elif opt in ("-p", "--port"):
+			global port
+			try:
+				port = int(arg)
+			except:
+				port = 8080
+
+
 	print "Wii-Scale started"
 
 	calculate = CalculateWeight()
@@ -155,4 +178,4 @@ def main():
 
 
 if __name__ == "__main__":
-	main()
+	main(sys.argv[1:])

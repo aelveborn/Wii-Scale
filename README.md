@@ -30,7 +30,20 @@ Install all node packages:
 
 	npm install
 
+
+## Config
+
+npm config set wii-scale:port 80
+npm config set wii-scale:host 127.0.0.1
+npm config set wii-scale:address 00:00:00:00:00
+
 ## Run
+
+npm start
+
+
+
+
 
 Start the web server:
 
