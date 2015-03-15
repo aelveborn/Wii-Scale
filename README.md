@@ -14,36 +14,27 @@ The weight is calculated by taking the mean of 500 readings. There is also a saf
 
 ## Dependencies
 
-To run Wii-Scale you'll need `Python 2` with `pygame` and `Node.js with npm installed`.
+To run Wii-Scale you'll need `Python 2` with `pygame` and `Node.js with npm installed`. Since Wii-Scale uses `BlueZ` bluetooth stack it's most likely it will only run on Linux.
+
 
 ### Install dependencies on Ubuntu
 
-Install Python, PIP and pygame
+Python
 
 	sudo apt-get install python
 	sudo apt-get install python-pip
 	sudo apt-get install python-pygame
 
-Install Node.js with npm (node package manager)
+Node.js with npm
 
 	sudo apt-get install nodejs
 
-Optionally (if `npm start`won work)
 
-	sudo apt-get install nodejs-legacy
+## Install Wii-Scale
 
-## Install
-
-Since Wii-Scale uses `BlueZ` bluetooth stack it's most likely it will only run on Linux.
-
-### Install Wii-Scale
-
-Install node packages
+Go to Wii-Scales root folder and run:
 
 	npm install
-
-Install python application
-
 	python setup.py install
 
 
@@ -57,9 +48,10 @@ You can configure a different host and port for the node.js web server. By defau
 
 ## Run
 
+
 	npm start
 
-Now the web server and Wii-Scale should be up and running. Point you web browser to http://localhost:8080 and you should see the web interface.
+Now the web server and Wii-Scale should be up and running at [http://localhost:8080](http://localhost:8080)
 
 ## Libraries
 
