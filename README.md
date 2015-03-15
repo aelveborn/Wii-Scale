@@ -2,11 +2,15 @@
 
 Wii-Scale turns your Wii Balance Board into a digital scale. Wii-Scale will automatically find your Wii Balance Board when you press the red sync button under it. All you have to do is just stand on it :) No boring console interface, watch your weight being calculated in realtime on a beautiful web insterface.
 
+![Wii-Scale](https://github.com/aelveborn/Wii-Scale/blob/gh-pages/images/wiiscale_measuring.png?raw=true) 
+
 Wii-Scale is based on python and node.js and communicates with the lightning fast WebSocket protocol.
 
 ## Usage
 
 Each time you whant to measure your weight you'll have to press the red sync button on your Wii Balance Board. The red sync button is located under the battery hatch. That's because it's a real hassle to pair it with your linux machine. Wii-Scale will stay on an listen for your Wii Balance Board and promt you what to do in the web interface.
+
+![Wii-Scale scanning for Wii Balance Board](https://github.com/aelveborn/Wii-Scale/blob/gh-pages/images/wiiscale_search.png?raw=true) 
 
 The weight is calculated by taking the mean of 500 readings. There is also a safe period of 80 readings where you will step on the balance board that are skipped by default. All this to get the best accurate reading as possible. Oh, and all this will take about 3 seconds.
 
