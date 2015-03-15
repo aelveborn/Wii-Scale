@@ -42,11 +42,12 @@ Go to Wii-Scales root folder and run:
 
 ## Config (optional)
 
-You can configure a different host and port for the node.js web server. By default Wii-Scale is using localhost:8080.
+You can configure a different host, port, Wii Balance Board bluetooth address and calibration. If the scales weight is off by any amout you can calibrate it by your own by setting the calibration i Kg. So `npm config set wii-scale:calibrate 2`will add 2kg to your weight, default is set to 0.
 
-	npm config set wii-scale:port 80
-	npm config set wii-scale:host 127.0.0.1
+	npm config set wii-scale:port 8080
+	npm config set wii-scale:host localhost
 	npm config set wii-scale:address 00:00:00:00:00
+	npm config set wii-scale:calibrate 0
 
 ## Run
 
