@@ -43,6 +43,8 @@ from socketIO_client import SocketIO, LoggingNamespace
 # Global
 sleep = True
 sensitivity = 30 #kg
+calibrate = 0 #kg
+config_address = None
 
 port = 8080
 host = "localhost"
@@ -55,14 +57,19 @@ class CalculateWeight:
 	def weight(self, data):
 		i = 0
 		total = 0
+		global calibrate
+
 		for i in range(len(data)):
 			total += data[i]
 		total = total / len(data)
+		total = total + calibrate
 		return self.formatWeight(total)
 
 
 class WebSocketIO:
 	def __init__(self):
+		global host
+		global port
 		self.socketIO = SocketIO(host, port, LoggingNamespace)
 		self.socketIO.on('sleep', self.receive_sleep)
 
@@ -81,32 +88,43 @@ class WebSocketIO:
 		if isinstance(args[0], bool):
 			sleep = args[0]
 
-
-def main(argv):
-	global sleep
-
+def options(argv):
 	try:
-		opts, args = getopt.getopt(argv, "hs:p:", ["server=", "port="])
+		opts, args = getopt.getopt(argv, "h:p:c:a:", ["host=", "port=", "calibrate=", "address="])
 	except getopt.GetoptError:
-		print "wii-scale.py -s <host> -p <port>"
+		print "wii-scale.py -h <host> -p <port> -c <calibration kg> -a <mac-addres>"
 		sys.exit(2)
 
 	for opt, arg in opts:
-		if opt in ("-h", "--help"):
-			print "wii-scale.py -s <host> -p <port>"
-			sys.exit(2)
-		elif opt in ("-s", "--server"):
+		if opt in ("-h", "--host"):
 			global host
-			host = arg
+			if arg:
+				host = arg.strip()
 		elif opt in ("-p", "--port"):
 			global port
 			try:
 				port = int(arg)
 			except:
-				port = 8080
+				pass
+		elif opt in ("-c", "--calibrate"):
+			global calibrate
+			try:
+				calibrate = int(arg)
+			except:
+				pass
+		elif opt in ("-a", "--address"):
+			global config_address
+			if arg:
+				config_address = arg.strip()
 
-
+def main(argv):
+	options(argv)
 	print "Wii-Scale started"
+
+	global sleep
+	global port
+	global config_address
+	global calibrate
 
 	calculate = CalculateWeight()
 	socket = WebSocketIO()
@@ -125,10 +143,13 @@ def main(argv):
 		socket.send_status("SYNC")
 
 		# Connect to balance board
-		address = board.discover()
+		if not config_address:
+			address = board.discover()
+		else:
+			address = config_address
 		board.connect(address)
 
-		if address != None:			
+		if address:			
 
 			#Flash lights
 			time.sleep(0.1)
