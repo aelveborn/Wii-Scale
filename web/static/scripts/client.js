@@ -61,7 +61,7 @@
 
     function reset() {
         count = 0;
-        complete = 500;
+        complete = 50;
         progress = 0;
     };
 

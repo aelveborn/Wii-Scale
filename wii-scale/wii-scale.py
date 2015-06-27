@@ -159,10 +159,10 @@ def main(argv):
 			done = False
 			total = []
 			firstStep = True
-			skipReadings = 50
+			skipReadings = 5
 
 			while(not done):
-				time.sleep(0.01)
+				time.sleep(0.1)
 
 				if board.mass.totalWeight > sensitivity:
 
