@@ -1,37 +1,42 @@
 <!DOCTYPE html>
 <html>
+
   <head>
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+    <meta name="description" content="Wii-scale : Turns your Wii Balance Board into a scale and presents your weight on a responsive website. Runs Linux and works on your Raspberry Pi">
 
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
-    <title>Wii-scale by aelveborn</title>
+    <title>Wii-scale</title>
   </head>
 
   <body>
-    <header>
-      <div class="inner">
-        <h1>Wii-scale</h1>
-        <h2>Turns your Wii Balance Board into a scale and presents your weight on a responsive website. Runs Linux and works on your Raspberry Pi, probably.</h2>
-        <a href="https://github.com/aelveborn/Wii-Scale" class="button"><small>View project on</small> GitHub</a>
-      </div>
-    </header>
 
-    <div id="content-wrapper">
-      <div class="inner clearfix">
-        <section id="main-content">
-          <h1>
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/aelveborn/Wii-Scale">View on GitHub</a>
+
+          <h1 id="project_title">Wii-scale</h1>
+          <h2 id="project_tagline">Turns your Wii Balance Board into a scale and presents your weight on a responsive website. Runs Linux and works on your Raspberry Pi</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/aelveborn/Wii-Scale/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/aelveborn/Wii-Scale/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
 <a id="wii-scale" class="anchor" href="#wii-scale" aria-hidden="true"><span class="octicon octicon-link"></span></a>Wii-Scale</h1>
 
 <p>Wii-Scale turns your Wii Balance Board into a digital scale. Wii-Scale will automatically find your Wii Balance Board when you press the red sync button under it. All you have to do is just stand on it :) No boring console interface, watch your weight being calculated in realtime on a beautiful web insterface.</p>
+
+<p><img src="https://github.com/aelveborn/Wii-Scale/blob/gh-pages/images/wiiscale_measuring.png?raw=true" alt="Wii-Scale"> </p>
 
 <p>Wii-Scale is based on python and node.js and communicates with the lightning fast WebSocket protocol.</p>
 
@@ -40,12 +45,14 @@
 
 <p>Each time you whant to measure your weight you'll have to press the red sync button on your Wii Balance Board. The red sync button is located under the battery hatch. That's because it's a real hassle to pair it with your linux machine. Wii-Scale will stay on an listen for your Wii Balance Board and promt you what to do in the web interface.</p>
 
+<p><img src="https://github.com/aelveborn/Wii-Scale/blob/gh-pages/images/wiiscale_search.png?raw=true" alt="Wii-Scale scanning for Wii Balance Board"> </p>
+
 <p>The weight is calculated by taking the mean of 500 readings. There is also a safe period of 80 readings where you will step on the balance board that are skipped by default. All this to get the best accurate reading as possible. Oh, and all this will take about 3 seconds.</p>
 
 <h2>
 <a id="dependencies" class="anchor" href="#dependencies" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dependencies</h2>
 
-<p>To run Wii-Scale you'll need <code>Python 2</code> with <code>pygame</code> and <code>Node.js with npm installed</code>. Since Wii-Scale uses <code>BlueZ</code> bluetooth stack it's most likely it will only run on Linux.</p>
+<p>To run Wii-Scale you'll need <code>Python 2</code> and <code>Node.js with npm installed</code>. Since Wii-Scale uses <code>BlueZ</code> bluetooth stack it's most likely it will only run on Linux.</p>
 
 <h3>
 <a id="install-dependencies-on-ubuntu" class="anchor" href="#install-dependencies-on-ubuntu" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install dependencies on Ubuntu</h3>
@@ -54,7 +61,6 @@
 
 <pre><code>sudo apt-get install python
 sudo apt-get install python-pip
-sudo apt-get install python-pygame
 </code></pre>
 
 <p>Node.js with npm</p>
@@ -74,11 +80,12 @@ python setup.py install
 <h2>
 <a id="config-optional" class="anchor" href="#config-optional" aria-hidden="true"><span class="octicon octicon-link"></span></a>Config (optional)</h2>
 
-<p>You can configure a different host and port for the node.js web server. By default Wii-Scale is using localhost:8080.</p>
+<p>You can configure a different host, port, Wii Balance Board bluetooth address and calibration. If the scales weight is off by any amout you can calibrate it by your own by setting the calibration i Kg. So <code>npm config set wii-scale:calibrate 2</code>will add 2kg to your weight, default is set to 0.</p>
 
-<pre><code>npm config set wii-scale:port 80
-npm config set wii-scale:host 127.0.0.1
+<pre><code>npm config set wii-scale:port 8080
+npm config set wii-scale:host localhost
 npm config set wii-scale:address 00:00:00:00:00
+npm config set wii-scale:calibrate 0
 </code></pre>
 
 <h2>
@@ -97,26 +104,29 @@ npm config set wii-scale:address 00:00:00:00:00
 <h2>
 <a id="lincense" class="anchor" href="#lincense" aria-hidden="true"><span class="octicon octicon-link"></span></a>Lincense</h2>
 
-<p>Wii-Scale is created and copyrighted by <a href="http://aelveborn.com">Andreas Älveborn</a> and lincensed under MIT. <a href="https://code.google.com/p/wiiboard-simple/">wiiboard-simple</a>  is licensed under LGPL.</p>
-        </section>
-
-        <aside id="sidebar">
-          <a href="https://github.com/aelveborn/Wii-Scale/zipball/master" class="button">
-            <small>Download</small>
-            .zip file
-          </a>
-          <a href="https://github.com/aelveborn/Wii-Scale/tarball/master" class="button">
-            <small>Download</small>
-            .tar.gz file
-          </a>
-
-          <p class="repo-owner"><a href="https://github.com/aelveborn/Wii-Scale"></a> is maintained by <a href="https://github.com/aelveborn">aelveborn</a>.</p>
-
-          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
-        </aside>
-      </div>
+<p>Wii-Scale is created and copyrighted by <a href="http://aelveborn.com">Andreas Älveborn</a> and lincensed under MIT. <a href="https://code.google.com/p/wiiboard-simple/">wiiboard-simple</a> is licensed under LGPL.</p>
+      </section>
     </div>
 
-  
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Wii-scale maintained by <a href="https://github.com/aelveborn">aelveborn</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-43039551-2");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+
   </body>
 </html>
