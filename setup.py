@@ -12,8 +12,8 @@ setup(
 	url = "https://github.com/aelveborn/Wii-Scale",
 	packages = ["wii-scale"],
 	install_requires = [
-		'pybluez>=0.18',
-		'pygame>=1.9.1release',
-		'socketio-client>=0.6.1'
+		'pybluez==0.18',
+		'pygame==1.9.1release',
+		'socketio-client==0.6.1'
 	]
 )
