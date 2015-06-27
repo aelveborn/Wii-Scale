@@ -16,7 +16,7 @@ The weight is calculated by taking the mean of 500 readings. There is also a saf
 
 ## Dependencies
 
-To run Wii-Scale you'll need `Python 2` with `pygame` and `Node.js with npm installed`. Since Wii-Scale uses `BlueZ` bluetooth stack it's most likely it will only run on Linux.
+To run Wii-Scale you'll need `Python 2` and `Node.js with npm installed`. Since Wii-Scale uses `BlueZ` bluetooth stack it's most likely it will only run on Linux.
 
 
 ### Install dependencies on Ubuntu
@@ -25,7 +25,6 @@ Python
 
 	sudo apt-get install python
 	sudo apt-get install python-pip
-	sudo apt-get install python-pygame
 
 Node.js with npm
 
@@ -63,4 +62,4 @@ Based on the [wiiboard-simple](https://code.google.com/p/wiiboard-simple/) libra
 
 ## Lincense
 
-Wii-Scale is created and copyrighted by [Andreas Älveborn](http://aelveborn.com) and lincensed under MIT. [wiiboard-simple](https://code.google.com/p/wiiboard-simple/)  is licensed under LGPL.
+Wii-Scale is created and copyrighted by [Andreas Älveborn](http://aelveborn.com) and lincensed under MIT. [wiiboard-simple](https://code.google.com/p/wiiboard-simple/) is licensed under LGPL.

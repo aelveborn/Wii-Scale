@@ -31,7 +31,6 @@
 # SOFTWARE.
 
 import wiiboard
-import pygame
 import time
 import sys
 import getopt
@@ -128,7 +127,6 @@ def main(argv):
 
 	calculate = CalculateWeight()
 	socket = WebSocketIO()
-	pygame.init()
 
 	# Scale	
 	running = True
@@ -158,34 +156,28 @@ def main(argv):
 			#Measure weight
 			socket.send_status("READY")
 
-			i = 0
 			done = False
 			total = []
 			firstStep = True
-			skipReadings = 80
+			skipReadings = 50
 
 			while(not done):
-				time.sleep(0.05)
+				time.sleep(0.01)
 
-				for event in pygame.event.get():
-					if event.type == wiiboard.WIIBOARD_MASS:
-						if event.mass.totalWeight > sensitivity:
+				if board.mass.totalWeight > sensitivity:
 
-							if firstStep:
-								firstStep = False
-								socket.send_status("MEASURING")
+					if firstStep:
+						firstStep = False
+						socket.send_status("MEASURING")
 
-							# Skips the first readings when the user steps on the balance board
-							skipReadings -= 1
-							if(skipReadings < 0):
-								total.append(event.mass.totalWeight)
-								socket.send_weight(calculate.weight(total))
+					# Skips the first readings when the user steps on the balance board
+					skipReadings -= 1
+					if(skipReadings < 0):
+						total.append(board.mass.totalWeight)
+						socket.send_weight(calculate.weight(total))
 
-						if event.mass.totalWeight <= sensitivity and not firstStep:
-							done = True
-						
-						if event.type == wiiboard.WIIBOARD_BUTTON_RELEASE:
-							done = True
+				if board.mass.totalWeight <= sensitivity and not firstStep:
+					done = True
 
 		# Done
 		sleep = True
@@ -193,10 +185,6 @@ def main(argv):
 
 		# Disconnect
 		board.disconnect()
-
-	# Clean up
-	pygame.quit()
-
 
 if __name__ == "__main__":
 	main(sys.argv[1:])

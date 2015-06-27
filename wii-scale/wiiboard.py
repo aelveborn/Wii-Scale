@@ -1,4 +1,4 @@
-'''Wiiboard driver -- pygame style
+'''Wiiboard driver
 Nedim Jackman December 2008
 No liability held for any use of this software.
 More information at http://code.google.com/p/wiiboard-simple/
@@ -8,15 +8,6 @@ import bluetooth
 import sys
 import thread
 import time
-import pygame
-
-base = pygame.USEREVENT
-WIIBOARD_BUTTON_PRESS = base + 1
-WIIBOARD_BUTTON_RELEASE = base + 2
-WIIBOARD_MASS = base + 3
-WIIBOARD_CONNECTED = base + 4
-WIIBOARD_DISCONNECTED = base + 5
-
 
 CONTINUOUS_REPORTING = "04" #Easier as string with leading zero
 
@@ -74,6 +65,7 @@ class Wiiboard:
 
  		self.status = "Disconnected"
  		self.lastEvent = BoardEvent(0,0,0,0,False,False)
+ 		self.mass = None
 
 		try:
 			self.receivesocket = bluetooth.BluetoothSocket(bluetooth.L2CAP)
@@ -103,7 +95,6 @@ class Wiiboard:
 			useExt = ["00",COMMAND_REGISTER,"04","A4","00","40","00"]
 			self.send(useExt)
 			self.setReportingType()
-			pygame.event.post(pygame.event.Event(WIIBOARD_CONNECTED))
 		else:
 			print "Could not connect to Wiiboard at address " + address
 
@@ -143,14 +134,12 @@ class Wiiboard:
 		if state == BUTTON_DOWN_MASK:
 			buttonPressed = True
 			if not self.buttonDown:
-				pygame.event.post(pygame.event.Event(WIIBOARD_BUTTON_PRESS))
 				self.buttonDown = True
 
 		if buttonPressed == False:
 			if self.lastEvent.buttonPressed == True:
 				buttonReleased = True
 				self.buttonDown = False
-				pygame.event.post(pygame.event.Event(WIIBOARD_BUTTON_RELEASE))
 
 		rawTR = (int(bytes[0].encode("hex"),16) << 8 ) + int(bytes[1].encode("hex"),16)
 		rawBR = (int(bytes[2].encode("hex"),16) << 8 ) + int(bytes[3].encode("hex"),16)
@@ -187,14 +176,11 @@ class Wiiboard:
 
 	# Thread that listens for incoming data
 	def receivethread(self):
-		#try:
-	#	self.receivesocket.settimeout(0.1)       #not for windows?
 		while self.status == "Connected":
 			if True:
 				data = self.receivesocket.recv(25)
 				intype = int( data.encode("hex")[2:4] )
 				if intype == INPUT_STATUS:
-				#TODO: Status input received. It just tells us battery life really
 					self.setReportingType()
 				elif intype == INPUT_READ_DATA:
 					if self.calibrationRequested == True:
@@ -206,14 +192,13 @@ class Wiiboard:
 
 				elif intype == EXTENSION_8BYTES:
 					self.lastEvent = self.createBoardEvent(data[2:12])
-					pygame.event.post(pygame.event.Event(WIIBOARD_MASS, mass=self.lastEvent))
+					self.mass = self.lastEvent
 
 				else:
 					print "ACK to data write received"
 
 		self.status = "Disconnected"
 		self.disconnect()
-		pygame.event.post(pygame.event.Event(WIIBOARD_DISCONNECTED))
 
 	def parseCalibrationResponse(self, bytes):
 		index = 0
