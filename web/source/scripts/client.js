@@ -37,7 +37,7 @@
     var startContent = 
         '<h4>Find your Wii Balance Board</h4>' +
         '<button type="button" id="start-scanning" class="btn btn-info">Search</button>' +
-        '<h6>Make sure bluetooth is working</h6>'
+        '<h6>Make sure bluetooth is working</h6>';
 
 
     var init = function() {
@@ -63,10 +63,10 @@
         count = 0;
         complete = 50;
         progress = 0;
-    };
+    }
 
     function done() {
-        return count >= complete
+        return count >= complete;
     }
 
     function setProgress() {
@@ -74,13 +74,13 @@
             progress = Math.round((count / complete) * 100);
             $('.progress-bar').css('width', progress + '%'); 
         }
-    };
+    }
 
     function setPopup(message) {
         var popover = $('#status').attr('data-content', message).data('bs.popover');
         popover.setContent();
         popover.$tip.addClass(popover.options.placement);
-    };
+    }
 
     $('body').on('click', '#start-scanning', function () {
         socket.emit('device search');
@@ -107,7 +107,7 @@
             case "SYNC":
                 reset();
                 setPopup("<h4>Press the red sync button under your Wii Balance Board</h4>" + 
-                    "<img src='/static/images/ring.gif' />" +
+                    "<img src='/assets/images/ring.gif' />" +
                     "<button type='button' id='cancel-scanning' class='btn btn-block'>Cancel</button>");
                 setProgress();
                 break;
@@ -124,6 +124,6 @@
                     setPopup(startContent);
                 }, 1000);
                 break;
-        };
+        }
     });
 })();

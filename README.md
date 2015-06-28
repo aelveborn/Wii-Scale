@@ -33,11 +33,15 @@ Node.js with npm
 
 ## Install Wii-Scale
 
-Go to Wii-Scales root folder and run:
+For users: Go to Wii-Scales root folder and run:
+
+	npm install --production
+	python setup.py install
+
+For developers: Go to Wii-Scales root folder and run:
 
 	npm install
 	python setup.py install
-
 
 ## Config (optional)
 
@@ -54,6 +58,17 @@ You can configure a different host, port, Wii Balance Board bluetooth address an
 	npm start
 
 Now the web server and Wii-Scale should be up and running at [http://localhost:8080](http://localhost:8080)
+
+## For developers
+
+### Grunt commands
+
+Always run grunt release before commiting the changes.
+
+	grunt
+	grunt watch
+	grunt clean-build
+	grunt release
 
 ## Libraries
 

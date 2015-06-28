@@ -41,6 +41,8 @@ web/*.so
 # Python
 ##########################
 
+*.py[cod]
+
 # Distribution / packaging
 .Python
 env/
