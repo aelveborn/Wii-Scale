@@ -107,7 +107,7 @@
             case "SYNC":
                 reset();
                 setPopup("<h4>Press the red sync button under your Wii Balance Board</h4>" + 
-                    "<img src='/assets/images/ring.gif' />" +
+                    "<img src='/static/images/ring.gif' />" +
                     "<button type='button' id='cancel-scanning' class='btn btn-block'>Cancel</button>");
                 setProgress();
                 break;
