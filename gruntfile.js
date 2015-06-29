@@ -3,7 +3,7 @@ module.exports = function (grunt) {
     grunt.initConfig({
 
     	path: {
-			root: 'web/',
+			root: 			'web/',
 			src: {
 				root: 		'web/source/',
 				less: 		'web/source/less/',
@@ -18,10 +18,24 @@ module.exports = function (grunt) {
 				scripts: 	'web/build/scripts/',
 				images: 	'web/build/images/',
 				views: 		'web/build/views/'
-			}
+			},
+			vendor: 		'node_modules/'
 		},
 
 		pkg: grunt.file.readJSON('package.json'),
+
+		concat: {
+			build: {
+				files: {
+				    '<%= path.dist.scripts %>scripts.js': [
+				    	'<%= path.vendor %>jquery/dist/jquery.js',
+				    	'<%= path.vendor %>bootstrap/js/tooltip.js',
+						'<%= path.vendor %>bootstrap/js/popover.js',
+				    	'<%= path.src.scripts %>**/*.js'
+				    	]
+				}
+			}
+		},
 
 		clean: {
 			build: {
@@ -48,14 +62,6 @@ module.exports = function (grunt) {
 		jshint: {
 			build: {
 				src: ['<%= path.src.scripts %>*.js']
-			}
-		},
-
-		concat: {
-			build: {
-				files: {
-				    '<%= path.dist.scripts %>scripts.js': ['<%= path.src.scripts %>**/*.js']
-				}
 			}
 		},
 

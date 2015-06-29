@@ -35,8 +35,7 @@ var io = require('socket.io')(http);
 var host = process.env.npm_package_config_host;
 var port = process.env.npm_package_config_port;
 
-app.use('/assets', require('express').static('web/build'));
-app.use('/vendor', require('express').static('node_modules'));
+app.use('/static', require('express').static('web/build'));
 
 app.get('/', function(req, res){
 	res.sendfile('web/views/index.html');
