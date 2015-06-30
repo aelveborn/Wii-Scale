@@ -33,15 +33,23 @@ Node.js with npm
 
 ## Install Wii-Scale
 
-For users: Go to Wii-Scales root folder and run:
+This will pair your Wii Balance Board to you computer or Raspberry Pi and configure Wii Scale to connect to your Wii Balance Board.
 
-	npm install --production
-	python setup.py install
+Installation for users:
 
-For developers: Go to Wii-Scales root folder and run:
+	sudo npm install --production
 
-	npm install
-	python setup.py install
+Installation for developers:
+
+	sudo npm install
+
+Manually install python software (this is done during the normal install):
+
+	sudo python setup.py install
+
+Manually pair your Wii Balance Board (this is done during the normal install):
+
+	sudo python wii-scale/bind-setup.py
 
 ## Config (optional)
 

@@ -18,7 +18,9 @@
     "calibrate": 0
   },
   "scripts": {
-    "start": "node scripts/start.js"
+    "start": "node scripts/start.js",
+    "postinstall": "node scripts/post-install.js",
+    "preinstall": "node scripts/pre-install.js"
   },
   "dependencies": {
     "express": "4.12.0",
