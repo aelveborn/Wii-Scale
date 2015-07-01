@@ -116,11 +116,11 @@ def options(argv):
 			if arg:
 				config_address = arg.strip()
 
-def paired:
+def paired():
 	global config_address
 	if not config_address:
 		return True
-	else
+	else:
 		return False
 
 
