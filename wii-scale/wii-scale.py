@@ -116,6 +116,14 @@ def options(argv):
 			if arg:
 				config_address = arg.strip()
 
+def paired:
+	global config_address
+	if not config_address:
+		return True
+	else
+		return False
+
+
 def main(argv):
 	options(argv)
 	print "Wii-Scale started"
@@ -129,37 +137,37 @@ def main(argv):
 	socket = WebSocketIO()
 
 	# Scale	
-	running = True
-	while(running):
+	while(True):
 
 		if sleep:
 			socket.wait()
 			continue
+
+		# Reset
+		done = False
+		total = []
+		firstStep = True
+		skipReadings = 5
 
 		# Re initialize each run due to bug in wiiboard
 		board = wiiboard.Wiiboard()
 		socket.send_status("SYNC")
 
 		# Connect to balance board
-		if not config_address:
+		if not paired():
 			address = board.discover()
 		else:
 			address = config_address
 		board.connect(address)
 
-		if address:			
+		if address:
 
 			#Flash lights
 			time.sleep(0.1)
 			board.setLight(True)
 
 			#Measure weight
-			socket.send_status("READY")
-
-			done = False
-			total = []
-			firstStep = True
-			skipReadings = 5
+			socket.send_status("READY")			
 
 			while(not done):
 				time.sleep(0.1)
@@ -182,6 +190,8 @@ def main(argv):
 		# Done
 		sleep = True
 		socket.send_status("SLEEP")
+
+		# TODO: DO NOT SEND SLEEP IT THE DEVICE IS PAIRED.
 
 		# Disconnect
 		board.disconnect()
