@@ -29,11 +29,17 @@
 	SOFTWARE.
 */
 
-var server = require('../web/server.js');
-var python = require('./start-python.js');
+var PythonShell = require('python-shell');
 
-// Starts Wii-Scale python application
-python.start();
+var options = {
+	scriptPath: '/',
+	args: [
+		'install'
+		]
+}
 
-// Starts the webserver
-server.start();
+exports.start = function() {
+	PythonShell.run('setup.py', options, function (error) {
+		if (error) throw error;
+	});
+}

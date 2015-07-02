@@ -33,33 +33,77 @@ Node.js with npm
 
 ## Install Wii-Scale
 
-For users: Go to Wii-Scales root folder and run:
+If you are a developer, check out the Developer install section. This will install Wii-Scale and pair your Wii balance board to you computer or Raspberry Pi. To setup Wii-Scale on a Raspberry Pi, [follow this guide in the wiki](https://github.com/aelveborn/Wii-Scale/wiki/Guide:-How-to-install-Wii-Scale-on-Raspberry-Pi).
 
-	npm install --production
-	python setup.py install
+	sudo npm install --production
 
-For developers: Go to Wii-Scales root folder and run:
-
-	npm install
-	python setup.py install
-
-## Config (optional)
-
-You can configure a different host, port, Wii Balance Board bluetooth address and calibration. If the scales weight is off by any amout you can calibrate it by your own by setting the calibration i Kg. So `npm config set wii-scale:calibrate 2`will add 2kg to your weight, default is set to 0.
-
-	npm config set wii-scale:port 8080
-	npm config set wii-scale:host localhost
-	npm config set wii-scale:address 00:00:00:00:00
-	npm config set wii-scale:calibrate 0
 
 ## Run
-
 
 	npm start
 
 Now the web server and Wii-Scale should be up and running at [http://localhost:8080](http://localhost:8080)
 
+
+## Open up the webserver to be accessable from the outside (optional)
+
+	npm config set wii-scale:host 0.0.0.0
+
+
+## Config (optional)
+
+You can configure a different host, port, Wii Balance Board bluetooth address and calibration.
+
+
+### Webserver port
+
+Define a custom port for the webserver (default is 8080):
+
+	npm config set wii-scale:port 8080
+
+
+### Webserver host
+
+Define a different host for the webserver (default is localhost):
+
+	npm config set wii-scale:host localhost
+
+
+### Paired MAC-address
+
+If you have paired your Wii balance board with your computer or Raspberry Pi you'll need to set the address to your Wii balance boards MAC address. If the MAC address is configured Wii-Scale wont scan for your Wii balance board, since it should be paired :). This is configured during `npm install` or by running `sudo python wii-scale/bind-setup.py`.
+
+	npm config set wii-scale:address 00:00:00:00:00
+
+
+### Calibrate Wii-Scale
+
+If the scales weight is off by any amout you can calibrate it by your own by setting the calibration i Kg. So `npm config set wii-scale:calibrate 2`will add 2kg to your weight, default is set to 0.
+
+	npm config set wii-scale:calibrate 0
+
+
 ## For developers
+
+### Developer install
+
+If you are a developer or if you whant to manually install and configure Wii-Scale you can follow this guide.
+
+Install Wii-Scale with development dependencies:
+
+	sudo npm install
+
+
+### Manual install and operations
+
+Manually install the Wii-Scale backend software (this is done during npm install):
+
+	sudo python setup.py install
+
+Pair your Wii Balance Board:
+
+	sudo python wii-scale/bind-setup.py
+
 
 ### Grunt commands
 
@@ -70,9 +114,10 @@ Always run grunt release before commiting the changes.
 	grunt clean-build
 	grunt release
 
+
 ## Libraries
 
-Based on the [wiiboard-simple](https://code.google.com/p/wiiboard-simple/) library.
+Wii-Scale uses the [wiiboard-simple](https://code.google.com/p/wiiboard-simple/) library and [xwiimote](https://github.com/dvdhrm/xwiimote)
 
 
 ## Lincense
