@@ -40,6 +40,7 @@ from socketIO_client import SocketIO, LoggingNamespace
 
 
 # Global
+board = None
 sleep = True
 sensitivity = 30 #kg
 calibrate = 0 #kg
@@ -71,6 +72,7 @@ class WebSocketIO:
 		global port
 		self.socketIO = SocketIO(host, port, LoggingNamespace)
 		self.socketIO.on('sleep', self.receive_sleep)
+		self.socketIO.on('disconnect', self.receive_disconnect)
 
 	def wait(self):
 		self.socketIO.wait(seconds = 1)
@@ -86,6 +88,10 @@ class WebSocketIO:
 		global sleep
 		if isinstance(args[0], bool):
 			sleep = args[0]
+
+	def receive_disconnect(self, *args): #TODO: NEW
+		global board
+		board.disconnect()
 
 def options(argv):
 	try:
@@ -116,13 +122,6 @@ def options(argv):
 			if arg:
 				config_address = arg.strip()
 
-def paired():
-	global config_address
-	if not config_address:
-		return True
-	else:
-		return False
-
 
 def main(argv):
 	options(argv)
@@ -132,9 +131,11 @@ def main(argv):
 	global port
 	global config_address
 	global calibrate
+	global board
 
 	calculate = CalculateWeight()
 	socket = WebSocketIO()
+	board = wiiboard.Wiiboard()
 
 	# Scale	
 	while(True):
@@ -149,19 +150,23 @@ def main(argv):
 		firstStep = True
 		skipReadings = 5
 
-		# Re initialize each run due to bug in wiiboard
-		board = wiiboard.Wiiboard()
-		socket.send_status("SYNC")
 
 		# Connect to balance board
-		if not paired():
-			address = board.discover()
-		else:
-			address = config_address
-		board.connect(address)
+		if not board.isConnected():
+			# Re initialize each run due to bug in wiiboard
+			# Note: Seems to be working though :/
+			board = wiiboard.Wiiboard()
+			socket.send_status("SYNC")
 
+			if not config_address:
+				address = board.discover()
+			else:
+				address = config_address
+			board.connect(address)
+
+
+		#Measure
 		if address:
-
 			#Flash lights
 			time.sleep(0.1)
 			board.setLight(True)
@@ -190,11 +195,6 @@ def main(argv):
 		# Done
 		sleep = True
 		socket.send_status("SLEEP")
-
-		# TODO: DO NOT SEND SLEEP IT THE DEVICE IS PAIRED.
-
-		# Disconnect
-		board.disconnect()
 
 if __name__ == "__main__":
 	main(sys.argv[1:])

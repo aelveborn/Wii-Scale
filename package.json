@@ -19,7 +19,6 @@
   },
   "scripts": {
     "start": "node scripts/start.js",
-    "postinstall": "node scripts/post-install.js",
     "preinstall": "node scripts/pre-install.js"
   },
   "dependencies": {
