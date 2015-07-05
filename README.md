@@ -45,7 +45,7 @@ If you are a developer, check out the Developer install section. This will insta
 Now the web server and Wii-Scale should be up and running at [http://localhost:8080](http://localhost:8080)
 
 
-## Open up the webserver to be accessable from the outside (optional)
+### Open up the webserver to be accessable from the outside (optional)
 
 	npm config set wii-scale:host 0.0.0.0
 
