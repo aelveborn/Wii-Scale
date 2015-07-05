@@ -29,11 +29,25 @@
 	SOFTWARE.
 */
 
-var server = require('../web/server.js');
-var python = require('./start-python.js');
+var PythonShell = require('python-shell');
 
-// Starts Wii-Scale python application
-python.start();
+var host = process.env.npm_package_config_host;
+var port = process.env.npm_package_config_port;
+var address = process.env.npm_package_config_address;
+var calibrate = process.env.npm_package_config_calibrate;
 
-// Starts the webserver
-server.start();
+var options = {
+	scriptPath: 'wii-scale/',
+	args: [
+		'-h ' + host,
+		'-p ' + port,
+		'-a ' + address,
+		'-c ' + calibrate
+		]
+}
+
+exports.start = function() {
+	PythonShell.run('wii-scale.py', options, function (error) {
+		if (error) throw error;
+	});
+}
