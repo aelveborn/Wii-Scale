@@ -71,17 +71,21 @@ class WebSocketIO:
 		global host
 		global port
 		self.socketIO = SocketIO(host, port, LoggingNamespace)
-		self.socketIO.on('sleep', self.receive_sleep)
-		self.socketIO.on('disconnect', self.receive_disconnect)
+		self.socketIO.on('wiiscale-sleep', self.receive_sleep)
+		self.socketIO.on('wiiscale-disconnect', self.receive_disconnect)
+		self.socketIO.on('wiiscale-connection', self.receive_connection)
 
 	def wait(self):
 		self.socketIO.wait(seconds = 1)
 
 	def send_status(self, status):
-		self.socketIO.emit('status', {'status': status})
+		self.socketIO.emit('wiiscale-status', {'status': status})
 
 	def send_weight(self, totalWeight):
-		self.socketIO.emit('weight', {'totalWeight': totalWeight})
+		self.socketIO.emit('wiiscale-weight', {'totalWeight': totalWeight})
+
+	def send_connection_status(self, status):
+		self.socketIO.emit('wiiscale-connection', {'status': status})
 
 	# Accepts True or False as argument
 	def receive_sleep(self, *args):
@@ -89,7 +93,10 @@ class WebSocketIO:
 		if isinstance(args[0], bool):
 			sleep = args[0]
 
-	def receive_disconnect(self, *args): #TODO: NEW
+	def receive_connection(self):
+		self.send_connection_status(board.isConnected())
+
+	def receive_disconnect(self):
 		global board
 		board.disconnect()
 

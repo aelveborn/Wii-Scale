@@ -91,7 +91,19 @@
         socket.emit('device sleep');
     });
 
-    socket.on('weight data', function(data){
+    socket.on('wiiscale-connection', function(data) {
+        console.log(data.status); // TODO: Remove whole function
+    });
+
+    socket.on('device connected', function() {
+        // TODO: Implement method
+    });
+
+    socket.on('device disconnected', function() {
+        // TODO: Implement method
+    });
+
+    socket.on('wiiscale-weight', function(data){
         count++;
         setProgress();
 
@@ -102,7 +114,9 @@
         }
     });
 
-    socket.on('status data', function(data) {
+    socket.on('wiiscale-status', function(data) {
+        console.log(data.status); // TODO: Remove
+
         switch(data.status) {
             case "SYNC":
                 reset();

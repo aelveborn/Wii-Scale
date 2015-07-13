@@ -41,24 +41,62 @@ app.get('/', function(req, res){
 	res.sendfile('web/views/index.html');
 });
 
+
+// Morror emits to communicate between the client and wii-scale
+// wiiscale-* communicates with the Wii-Scale backend application
 io.on('connection', function(socket){
 
+	var isConnected = false;
+
+
 	// From Client
+	// ----------------------------------
+
 	socket.on('device search', function() {
-		io.emit('sleep', false);
+		io.emit('wiiscale-sleep', false);
 	});
 
 	socket.on('device sleep', function() {
-		io.emit('sleep', true);
+		io.emit('wiiscale-sleep', true);
 	});
+
+	// TODO: implement on client
+	socket.on('device disconnect', function() {
+		io.emit('wiiscale-disconnect');
+	});
+
 
 	// From Wii-Scale
-	socket.on('status', function(data){
-		io.emit('status data', data);
+	// -----------------------------------
+
+	// Status from wii-scale
+	// data.status = string
+	socket.on('wiiscale-status', function(data){
+		io.emit('wiiscale-status', data);
 	});
 
-	socket.on('weight', function(data){
-		io.emit('weight data', data);
+	// Measured weight from wii-scale
+	// data.totalWeight = int
+	socket.on('wiiscale-weight', function(data){
+		io.emit('wiiscale-weight', data);
+	});
+
+	// Connection status
+	// data.status = true / false
+	socket.on('wiiscale-connection', function(data) {
+		io.emit('wiiscale-connection', data); // TODO: Remove
+
+		if(data.status == true && isConnected == false) {
+			// device is now connected
+			io.emit('device connected');
+		}
+
+		if(data.status == false && isConnected == true) {
+			// device has been disconnected
+			io.emit('device disconnected');
+		}
+
+		isConnected = data.status;
 	});
 
 });
