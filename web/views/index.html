@@ -39,40 +39,136 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Styles -->
-    <link rel="stylesheet" href="/static/styles/site.css">
-    <link rel='stylesheet' type='text/css' href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' >
+    <link rel="stylesheet" type="text/css" href="/static/styles/site.css">
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700">
 
 </head>
 <body>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-xs-12 text-center">
-                <h1 id="status" class="promotion">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">
                     Wii-Scale
-                </h1>
+                </a>
             </div>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" class="success" id="connect">
+                        <i class="fa fa-compress"></i>
+                        Connect
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="danger" id="disconnect">
+                        <i class="fa fa-remove"></i>
+                        Disconnect
+                    </a>
+                </li>
+            </ul>
         </div>
+    </nav>
+
+    <div class="container-fluid">        
 
         <div class="row">
-            <div class="col-xs-12">
-                <div class="progress">
-                    <div class="progress-bar progress-bar-success"
-                        role="progressbar"
-                        style="width: 0%">
-                    </div>
+            <div class="col-xs-12 status-bar">
+
+                <div class="status info" id="status-start">
+                    <p>
+                        Start by clicking the green <span class="label label-success"><i class="fa fa-compress"></i> Connect</span> button
+                    </p>
+                </div>
+
+                <div class="status info" id="status-search">
+                    <i class="fa fa-circle-o-notch fa-spin"></i>
+                    <p>
+                        Connecting to your Wii Balance Board
+                    </p>
+                </div>
+
+                <div class="status info" id="status-ready">
+                    <i class="fa fa-male"></i>
+                    <p>
+                        Step on your board now
+                    </p>
+                </div>
+
+                <div class="status info" id="status-measuring">
+                    <i class="fa fa-tachometer"></i>
+                    <p>
+                        Measuring
+                    </p>
+                </div>
+
+                <div class="status success" id="status-done">
+                    <i class="fa fa-check"></i>
+                    <p>
+                        Done!
+                    </p>
+                </div>
+
+                <div class="status info" id="status-disconnecting">
+                    <i class="fa fa-circle-o-notch fa-spin"></i>
+                    <p>
+                        Disconnecting
+                    </p>
+                </div>
+                
+                <div class="status warning" id="status-warning">
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <p>
+                        Could not find Wii Balance Board. Press the red sync button underneath the battery hatch while connecting.
+                    </p>
+                </div>
+
+                <div class="status danger" id="status-error">
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <p>
+                        An error occured
+                    </p>
                 </div>
             </div>
         </div>
 
         <div class="row">
-            <div class="col-xs-12 col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-4">
-                <div class="weight-panel">
-                    <h2>Your weight:</h2>
+            <div class="progress">
+                <div class="progress-bar progress-bar-success"
+                    role="progressbar"
+                    style="width: 0%">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <div class="col-xs-12 col-md-5 col-md-offset-1">
+                <div class="weight">
                     <span class="value" id="weight-total">0.0</span>
                     <span class="unit">kg</span>
                 </div>
             </div>
+
+            <div class="col-xs-12 col-md-4 col-md-offset-1">
+                <div class="history">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <span class="badge">145 kg</span>
+                            2015-01-05
+                        </li>
+                        <li class="list-group-item">
+                            <span class="badge">125 kg</span>
+                            2015-01-04
+                        </li>
+                        <li class="list-group-item">
+                            <span class="badge">111 kg</span>
+                            2015-01-03
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
         </div>
     </div>
 

@@ -109,12 +109,9 @@ Pair your Wii Balance Board:
 
 ### Grunt commands
 
-Always run grunt release before commiting the changes.
-
 	grunt
 	grunt watch
 	grunt clean-build
-	grunt release
 
 
 ## Libraries

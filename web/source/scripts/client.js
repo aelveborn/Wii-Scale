@@ -34,35 +34,17 @@
     // Socket io
     var socket = io();
 
-    var startContent = 
-        '<h4>Find your Wii Balance Board</h4>' +
-        '<button type="button" id="start-scanning" class="btn btn-info">Search</button>' +
-        '<h6>Make sure bluetooth is working</h6>';
-
-
     var init = function() {
-        // UI
-        $('#status').popover({
-            trigger: 'manual',
-            placement: 'bottom',
-            html: true,
-            content: startContent
-        });
-
-        $('#status').popover('show');
-
-        // Progress bar
-        var count = 0;
-        var complete = 0;
-        var progress = 0;
-
         reset();
-    }();
+        showControls(true, false);
+        showDialog('#status-start');        
+    };
 
     function reset() {
         count = 0;
         complete = 50;
         progress = 0;
+        setProgress();
     }
 
     function done() {
@@ -70,48 +52,79 @@
     }
 
     function setProgress() {
-        if(!done()) {
-            progress = Math.round((count / complete) * 100);
-            $('.progress-bar').css('width', progress + '%'); 
+        progress = Math.round((count / complete) * 100);
+        if(progress <= 100) {
+            $('.progress-bar').css('width', progress + '%');
+        }        
+    }
+
+    function showDialog(id) {
+        $('.status').each(function() {
+            $(this).hide();
+        });
+        $(id).fadeIn();
+    }
+
+    function connect() {
+        socket.emit('device connect');
+    }
+
+    function disconnect() {
+        socket.emit('device disconnect');
+        showDialog('#status-disconnecting');
+    }
+
+    function save() {
+        // TODO: Save
+    }
+
+
+    // From wii-scale
+
+    function weightReading(totalWeight) {       
+        if(!done()) {            
+            $('#weight-total').text(totalWeight);
+        } else if (count === complete) {
+            showDialog('#status-done');
+            save();
+        }
+
+        setProgress();
+        count++;            
+    }
+
+
+    // Buttons
+
+    $('#connect').on('click', function(e) {
+        e.preventDefault();
+        connect();
+    });
+
+    $('#disconnect').on('click', function(e) {
+        e.preventDefault();
+        disconnect();
+    });
+
+    function showControls(connect, disconnect) {
+        if(connect) {
+            $('#connect').fadeIn();
+        } else {
+            $('#connect').hide();
+        }
+
+        if(disconnect) {
+            $('#disconnect').fadeIn();
+        } else {
+            $('#disconnect').hide();
         }
     }
 
-    function setPopup(message) {
-        var popover = $('#status').attr('data-content', message).data('bs.popover');
-        popover.setContent();
-        popover.$tip.addClass(popover.options.placement);
-    }
 
-    $('body').on('click', '#start-scanning', function () {
-        socket.emit('device search');
-    });
-
-    $('body').on('click', '#cancel-scanning', function () {
-        setPopup(startContent);
-        socket.emit('device sleep');
-    });
-
-    socket.on('wiiscale-connection', function(data) {
-        console.log(data.status); // TODO: Remove whole function
-    });
-
-    socket.on('device connected', function() {
-        // TODO: Implement method
-    });
-
-    socket.on('device disconnected', function() {
-        // TODO: Implement method
-    });
+    // Socket
 
     socket.on('wiiscale-weight', function(data){
-        count++;
-        setProgress();
-
-        if(!done()) {
-            $('#weight-total').text(data.totalWeight.toFixed(1));
-        } else {
-            setPopup("<h4>Thank you!</h4>");  
-        }
+        weightReading(data.totalWeight.toFixed(1));
     });
 
     socket.on('wiiscale-status', function(data) {
@@ -119,24 +132,45 @@
 
         switch(data.status) {
             case "SYNC":
-                reset();
-                setPopup("<h4>Press the red sync button under your Wii Balance Board</h4>" + 
-                    "<img src='/static/images/ring.gif' />" +
-                    "<button type='button' id='cancel-scanning' class='btn btn-block'>Cancel</button>");
-                setProgress();
+                showDialog('#status-search');
+                showControls(false, true);
                 break;
+
+            case "NO DEVICE FOUND":
+                showDialog('#status-warning');
+                showControls(true, false);
+                break;
+
+            case "CONNECTING":
+                break;
+
+            case "CONNECTED":
+                reset();
+                showDialog('#status-ready');
+                showControls(false, true);
+                break;
+
+            case "DISCONNECTED":
+                showDialog('#status-start');        
+                showControls(true, false);
+                break;
+
             case "READY":
-                setPopup("<h4>Step on me...</h4>");
+                showDialog('#status-ready');
+                showControls(false, true);
                 break;
+
             case "MEASURING":
-                setPopup("<h4>Measuring..</h4>");
+                showDialog('#status-measuring');
+                showControls(false, true);
                 break;
-            case "SLEEP":              
+
+            case "DONE":
                 reset();
-                setProgress();
-                setTimeout(function() {
-                    setPopup(startContent);
-                }, 1000);
+                break;
+
+            case "NO PREVIOUS STATUS":
+                init();
                 break;
         }
     });

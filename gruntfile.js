@@ -46,7 +46,7 @@ module.exports = function (grunt) {
 		less: {
 			build: {
 				files: {
-					'<%= path.dist.styles %>site.css': [ '<%= path.src.less %>sources.less']
+					'<%= path.dist.styles %>site.css': [ '<%= path.src.less %>build.less']
 				}
 			}
 		},
@@ -61,7 +61,7 @@ module.exports = function (grunt) {
 
 		jshint: {
 			build: {
-				src: ['<%= path.src.scripts %>*.js']
+				src: ['<%= path.src.scripts %>*.js', '<%= path.root %>*.js', 'gruntfile.js']
 			}
 		},
 
@@ -89,17 +89,23 @@ module.exports = function (grunt) {
 				cwd: '<%= path.src.root %>',
 				src: ['**', '!**/less/**', '!**/images/**', '!**/scripts/**'],
 				dest: '<%= path.dist.root %>'
+			},
+			fontawesome: {
+				expand: true,
+				cwd: '<%= path.vendor %>/font-awesome/fonts/',
+				src: '**',
+				dest: '<%= path.dist.root %>/fonts/'
 			}
 		},
 
 		watch: {
 			js: {
 				files: ['<%= path.src.scripts %>**/*.js'],
-				tasks: ['jshint', 'concat']
+				tasks: ['jshint', 'concat', 'uglify']
 			},
 			less: {
 				files: ['<%= path.src.less %>**/*.less'],
-				tasks: ['less'] 
+				tasks: ['less', 'cssmin'] 
 			},
 			image: {
 				files: ['<%= path.src.images %>**/*.{png,jpg,gif}'],
@@ -120,8 +126,8 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-less');
 	grunt.loadNpmTasks('grunt-contrib-concat');
 
-	grunt.registerTask('default', ['less', 'jshint', 'concat', 'imagemin', 'copy']);
-	grunt.registerTask('clean-build', ['clean', 'less', 'jshint', 'concat', 'imagemin', 'copy']);
-	grunt.registerTask('release', ['clean', 'less', 'cssmin', 'jshint', 'concat', 'uglify', 'imagemin', 'copy']);
+	grunt.registerTask('default', ['build', 'watch']);
+	grunt.registerTask('build', ['less', 'cssmin', 'jshint', 'concat', 'uglify', 'imagemin', 'copy']);
+	grunt.registerTask('clean-build', ['clean', 'build']);
 
 };

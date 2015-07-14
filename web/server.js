@@ -41,26 +41,41 @@ app.get('/', function(req, res){
 	res.sendfile('web/views/index.html');
 });
 
-
-// Morror emits to communicate between the client and wii-scale
+// Mirror emits to communicate between the client and wii-scale
 // wiiscale-* communicates with the Wii-Scale backend application
+
+var NO_PREVIOUS_STATUS = "NO PREVIOUS STATUS";
+
+var users = -1; // Start at negative one since wii-scale becomes a user
+var last = { status: NO_PREVIOUS_STATUS };
+
 io.on('connection', function(socket){
 
-	var isConnected = false;
+	// Server
+	// -----------------------------------
+
+	users++;
+
+	// Send current status to new users
+	socket.emit('wiiscale-status', last);
+
+	// Disconnect wii-scale if no users is on the site
+	socket.on('disconnect', function() {
+		users--;
+		if(users === 0) {
+			last.status = NO_PREVIOUS_STATUS;
+			io.emit('wiiscale-disconnect');
+		}
+	});
 
 
 	// From Client
-	// ----------------------------------
+	// -----------------------------------
 
-	socket.on('device search', function() {
-		io.emit('wiiscale-sleep', false);
+	socket.on('device connect', function() {
+		io.emit('wiiscale-connect');
 	});
 
-	socket.on('device sleep', function() {
-		io.emit('wiiscale-sleep', true);
-	});
-
-	// TODO: implement on client
 	socket.on('device disconnect', function() {
 		io.emit('wiiscale-disconnect');
 	});
@@ -70,33 +85,16 @@ io.on('connection', function(socket){
 	// -----------------------------------
 
 	// Status from wii-scale
-	// data.status = string
+	// data.status 			string
 	socket.on('wiiscale-status', function(data){
 		io.emit('wiiscale-status', data);
+		latestStatus = data;
 	});
 
 	// Measured weight from wii-scale
-	// data.totalWeight = int
+	// data.totalWeight 	int
 	socket.on('wiiscale-weight', function(data){
 		io.emit('wiiscale-weight', data);
-	});
-
-	// Connection status
-	// data.status = true / false
-	socket.on('wiiscale-connection', function(data) {
-		io.emit('wiiscale-connection', data); // TODO: Remove
-
-		if(data.status == true && isConnected == false) {
-			// device is now connected
-			io.emit('device connected');
-		}
-
-		if(data.status == false && isConnected == true) {
-			// device has been disconnected
-			io.emit('device disconnected');
-		}
-
-		isConnected = data.status;
 	});
 
 });
@@ -105,4 +103,4 @@ exports.start = function() {
 	http.listen(port, host, function(){
 		console.log('Listening on ' + host + ':' + port);
 	});
-}
+};
