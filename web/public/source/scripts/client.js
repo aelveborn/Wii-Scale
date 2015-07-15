@@ -124,6 +124,12 @@
 
     // Socket
 
+    socket.on('entries all', function(data) {
+        if(data !== null && data !== undefined) {
+            
+        }
+    });
+
     socket.on('wiiscale-weight', function(data){
         weightReading(data.totalWeight.toFixed(1));
     });

@@ -61,6 +61,11 @@ io.on('connection', function(socket){
 	// Send current status to new users
 	socket.emit('wiiscale-status', last);
 
+	// Send all saved entries to the user
+	entries.getEntries(function(err, data) {
+		socket.emit('entries all', data);
+	});
+
 	// Disconnect wii-scale if no users is on the site
 	socket.on('disconnect', function() {
 		users--;

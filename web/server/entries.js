@@ -52,4 +52,17 @@ Entries.addEntry = function(entry) {
 	});
 };
 
+Entries.getEntries = function(callback) {
+	storage.load(function(err, data) {
+		if(err) throw err;
+
+		var entries = [];
+		if(data !== null) {
+			entries = data.entries;
+		}
+
+		callback(null, entries);
+	});
+};
+
 module.exports = Entries;
