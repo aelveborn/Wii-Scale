@@ -5,19 +5,22 @@ module.exports = function (grunt) {
     	path: {
 			root: 			'web/',
 			src: {
-				root: 		'web/source/',
-				less: 		'web/source/less/',
-				styles: 	'web/source/styles/',
-				scripts: 	'web/source/scripts/',
-				images: 	'web/source/images/',
-				views: 		'web/source/views/'
+				root: 		'web/public/source/',
+				less: 		'web/public/source/less/',
+				styles: 	'web/public/source/styles/',
+				scripts: 	'web/public/source/scripts/',
+				images: 	'web/public/source/images/',
+				views: 		'web/public/source/views/'
 			},
 			dist: {
-				root: 		'web/build/',
-				styles: 	'web/build/styles/',
-				scripts: 	'web/build/scripts/',
-				images: 	'web/build/images/',
-				views: 		'web/build/views/'
+				root: 		'web/public/build/',
+				styles: 	'web/public/build/styles/',
+				scripts: 	'web/public/build/scripts/',
+				images: 	'web/public/build/images/',
+				views: 		'web/public/build/views/'
+			},
+			server: {
+				root: 		'web/server/'
 			},
 			vendor: 		'node_modules/'
 		},
@@ -61,7 +64,10 @@ module.exports = function (grunt) {
 
 		jshint: {
 			build: {
-				src: ['<%= path.src.scripts %>*.js', '<%= path.root %>*.js', 'gruntfile.js']
+				src: ['<%= path.src.scripts %>*.js', 
+					'<%= path.root %>*.js', 
+					'<%= path.server.root %>*.js',
+					'gruntfile.js']
 			}
 		},
 
@@ -102,6 +108,14 @@ module.exports = function (grunt) {
 			js: {
 				files: ['<%= path.src.scripts %>**/*.js'],
 				tasks: ['jshint', 'concat', 'uglify']
+			},
+			jshint: {
+				files: [
+					'<%= path.server.root %>*.js',
+					'<%= path.root %>*.js', 
+					'gruntfile.js'
+					],
+				tasks: ['jshint']
 			},
 			less: {
 				files: ['<%= path.src.less %>**/*.less'],

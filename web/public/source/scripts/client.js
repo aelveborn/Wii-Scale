@@ -74,8 +74,8 @@
         showDialog('#status-disconnecting');
     }
 
-    function save() {
-        // TODO: Save
+    function save(weight) {
+        socket.emit('entries new', weight);
     }
 
 
@@ -85,8 +85,9 @@
         if(!done()) {            
             $('#weight-total').text(totalWeight);
         } else if (count === complete) {
+            $('#weight-total').text(totalWeight);
             showDialog('#status-done');
-            save();
+            save(totalWeight);
         }
 
         setProgress();

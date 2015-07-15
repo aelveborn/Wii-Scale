@@ -2,6 +2,9 @@
 # Node
 #########################
 
+# Storage
+app-data.json
+
 # Logs
 web/logs
 web/*.log

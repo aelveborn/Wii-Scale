@@ -34,11 +34,13 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var host = process.env.npm_package_config_host;
 var port = process.env.npm_package_config_port;
+var entry = require('./server/entry.js');
+var entries = require('./server/entries.js');
 
-app.use('/static', require('express').static('web/build'));
+app.use('/static', require('express').static('web/public/build'));
 
 app.get('/', function(req, res){
-	res.sendfile('web/views/index.html');
+	res.sendfile('web/public/views/index.html');
 });
 
 // Mirror emits to communicate between the client and wii-scale
@@ -78,6 +80,10 @@ io.on('connection', function(socket){
 
 	socket.on('device disconnect', function() {
 		io.emit('wiiscale-disconnect');
+	});
+
+	socket.on('entries new', function(weight) {
+		entries.addEntry(entry.create(weight));
 	});
 
 
