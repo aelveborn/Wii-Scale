@@ -40,7 +40,6 @@
 
 var fs = require('fs');
 var path = "./app-data.json";
-
 var storage = {};
 
 storage.save = function(data) {

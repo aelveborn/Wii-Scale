@@ -1,4 +1,4 @@
-<!--
+/*
     Author: Andreas Älveborn
     URL: https://github.com/aelveborn/Wii-Scale
 
@@ -27,30 +27,15 @@
     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
--->
-<!DOCTYPE html>
-<html ng-app="app">
-<head>
-    <title>Wii-Scale</title>
+*/
 
-    <meta charset="utf-8" />
-    <meta name="author" content="Andreas Älveborn">
-    <meta name="copyright" content="Andreas Älveborn (c) 2015">  
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+(function() {
+    'use strict';
 
-    <!-- Styles -->
-    <link rel="stylesheet" type="text/css" href="/static/styles/site.css">
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700">
+    angular.module('app.services', []).
+        
+        factory('socket', ['socketFactory', function (socketFactory) {
+            return socketFactory();
+        }]);
 
-</head>
-<body>
-
-    <base href="/">
-    <div ng-view></div>
-
-    <!-- Scripts -->
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/static/scripts/scripts.js"></script>
-
-</body>
-</html>
+})();

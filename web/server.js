@@ -30,28 +30,33 @@
 */
 
 var app = require('express')();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+var routes = require('./server/routes/index.js');
+
 var host = process.env.npm_package_config_host;
 var port = process.env.npm_package_config_port;
-var entry = require('./server/entry.js');
-var entries = require('./server/entries.js');
 
 app.use('/static', require('express').static('web/public/build'));
 
-app.get('/', function(req, res){
-	res.sendfile('web/public/views/index.html');
-});
+// Routes
+app.get('/', routes.index);
+app.get('/directives/:page', routes.directives);
+app.get('/partials/:page', routes.partials);
 
-// Mirror emits to communicate between the client and wii-scale
-// wiiscale-* communicates with the Wii-Scale backend application
+
+
+// TODO: Move io to routers/sockets
+
+var entry = require('./server/models/entry.js');
+var entries = require('./server/models/entries.js');
 
 var NO_PREVIOUS_STATUS = "NO PREVIOUS STATUS";
-
 var users = -1; // Start at negative one since wii-scale becomes a user
 var last = { status: NO_PREVIOUS_STATUS };
 
 io.on('connection', function(socket){
+
 
 	// Server
 	// -----------------------------------
@@ -91,6 +96,10 @@ io.on('connection', function(socket){
 		entries.addEntry(entry.create(weight));
 	});
 
+	socket.on('entries delete', function(entry) {
+		entries.removeEntry(entry);
+	});
+
 
 	// From Wii-Scale
 	// -----------------------------------
@@ -107,11 +116,11 @@ io.on('connection', function(socket){
 	socket.on('wiiscale-weight', function(data){
 		io.emit('wiiscale-weight', data);
 	});
-
 });
 
+
 exports.start = function() {
-	http.listen(port, host, function(){
+	server.listen(port, host, function(){
 		console.log('Listening on ' + host + ':' + port);
 	});
 };

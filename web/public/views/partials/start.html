@@ -1,0 +1,138 @@
+<!--
+    Author: Andreas Älveborn
+    URL: https://github.com/aelveborn/Wii-Scale
+
+    This file is part of Wii-Scale
+
+    ----------------------------------------------------------------------------
+    
+    The MIT License (MIT)
+    
+    Copyright (c) 2015 Andreas Älveborn
+    
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+    
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+    
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+-->
+<div ng-controller="StartController as Start">
+
+	<nav class="navbar navbar-default">
+	    <div class="container-fluid">
+	        <div class="navbar-header">
+	            <a class="navbar-brand" href="/">
+	                Wii-Scale
+	            </a>
+	        </div>
+
+	        <ul class="nav navbar-nav navbar-right">
+	            <li>
+	                <a href="#" class="success" ng-click="connect()" ng-show="controls.connect">
+	                    <i class="fa fa-compress"></i>
+	                    Connect
+	                </a>
+	            </li>
+	            <li>
+	                <a href="#" class="danger" ng-click="disconnect()" ng-show="controls.disconnect">
+	                    <i class="fa fa-remove"></i>
+	                    Disconnect
+	                </a>
+	            </li>
+	        </ul>
+	    </div>
+	</nav>
+
+	<div class="container-fluid">        
+
+	    <div class="row">
+	        <div class="col-xs-12 status-bar">
+
+	        	<status type="info" ng-show="status.start">
+        			<p>
+        				Start by clicking the green <span class="label label-success"><i class="fa fa-compress"></i> Connect</span> button
+        			</p>
+	        	</status>
+
+	            <status type="info" ng-show="status.search">
+	                <i class="fa fa-circle-o-notch fa-spin"></i>
+	                <p>
+	                	Connecting to your Wii Balance Board
+	                </p>
+	            </status>
+
+	            <status type="info" ng-show="status.ready">
+	                <i class="fa fa-male"></i>
+	                <p>
+	                    Step on your board now
+	                </p>
+	            </status>
+
+	            <status type="info" ng-show="status.measuring">
+	                <i class="fa fa-tachometer"></i>
+	                <p>
+	                    Measuring
+	                </p>
+	            </status>
+
+	            <status type="success" ng-show="status.done">
+	                <i class="fa fa-check"></i>
+	                <p>
+	                    Done!
+	                </p>
+	            </status>
+
+	            <status type="info" ng-show="status.disconnecting">
+	                <i class="fa fa-circle-o-notch fa-spin"></i>
+	                <p>
+	                    Disconnecting
+	                </p>
+	            </status>
+	            
+	            <status type="warning" ng-show="status.warning">
+	                <i class="fa fa-exclamation-triangle"></i>
+	                <p>
+	                    Could not find Wii Balance Board. Press the red sync button underneath the battery hatch while connecting.
+	                </p>
+	            </status>
+
+	        </div>
+	    </div>
+
+	    <div class="row">
+			<progress-bar progress="measuring.progress"></progress-bar>
+	    </div>
+
+	    <div class="row">
+
+	        <div class="col-xs-12 col-md-5 col-md-offset-1">
+	            <div class="weight">
+	                <span class="value" id="weight-total">{{ measuring.weight | number:1 }}</span>
+	                <span class="unit">kg</span>
+	            </div>
+	        </div>
+
+	        <div class="col-xs-12 col-md-4 col-md-offset-1">
+	        	<h4 class="icon-heading">
+	        		<i class="fa fa-bookmark-o"></i>
+	        		History
+	        	</h4>
+	            <history entries="entries"></history>
+	        </div>
+
+	    </div>
+	</div>
+
+</div>

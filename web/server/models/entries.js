@@ -30,24 +30,22 @@
 */
 
 var storage = require('./storage.js');
-
-
 var Entries = {};
 
 Entries.addEntry = function(entry) {	
 	storage.load(function(err, data) {
 		if(err) throw err;
 
-		var entries = [];
+		var result = [];
 		var datastore = {};
 
 		if(data !== null) {
 			datastore = data;
-			entries = datastore.entries;
+			result = datastore.entries;
 		}
 
-		entries.push(entry);
-		datastore.entries = entries;
+		result.push(entry);
+		datastore.entries = result;
 		storage.save(datastore);
 	});
 };
@@ -62,6 +60,26 @@ Entries.getEntries = function(callback) {
 		}
 
 		callback(null, entries);
+	});
+};
+
+Entries.removeEntry = function(entry) {
+	storage.load(function(err, data) {
+		if(err) throw err;
+
+		if(data !== null) {
+			var result = [];
+			var datastore = {};
+
+            for (var i = 0; i < data.entries.length; i++) {
+                if(data.entries[i].dateTime !== entry.dateTime) {
+                    result.push(data.entries[i]);
+                }
+            }
+
+			datastore.entries = result;
+			storage.save(datastore);
+		}
 	});
 };
 

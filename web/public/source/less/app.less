@@ -47,6 +47,14 @@ h1, h2, h3, h4, h5, h6 {
 	font-weight: lighter;
 }
 
+.clearfix {
+	&:after {
+		content:"";
+		display:table;
+		clear:both;
+	}
+}
+
 .navbar {
 	border: 0;
 	margin-bottom: 0;
@@ -176,6 +184,45 @@ h1, h2, h3, h4, h5, h6 {
 	margin-top: 60px;
 
 	@media (min-width: 992px) {
-		margin-top: 45px;
+		margin-top: 15px;//45px;
 	}
+
+	a.delete {
+		float: right;
+		color: #777;
+		display: inline-block;
+		margin-left: 10px;
+		padding: 2px 0px 3px 10px;
+		line-height: 1;
+		vertical-align: middle;
+		white-space: nowrap;
+		text-align: center;
+		border-left: 1px solid #ddd;
+
+		&:hover {
+			color: @link-hover-color;
+		}
+	}
+
+	a {
+		text-decoration: none;
+
+		&.reset,
+		&.show-more {
+			text-transform: uppercase;
+
+			.fa {
+				padding-right: 5px;
+			}
+		}
+
+		&.reset {
+			//float: right;
+			display: block;
+		}
+	}
+}
+
+.icon-heading .fa {
+	padding-right: 8px;
 }
