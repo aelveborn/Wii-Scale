@@ -22,7 +22,8 @@ module.exports = function (grunt) {
 			server: {
 				root: 		'web/server/'
 			},
-			vendor: 		'node_modules/'
+			vendor: 		'node_modules/',
+			test: 			'test/'
 		},
 
 		pkg: grunt.file.readJSON('package.json'),
@@ -69,6 +70,9 @@ module.exports = function (grunt) {
 					'<%= path.root %>*.js', 
 					'<%= path.server.root %>*.js',
 					'gruntfile.js']
+			},
+			test: {
+				src: ['<%= path.test %>**/*.js']
 			}
 		},
 
@@ -105,10 +109,16 @@ module.exports = function (grunt) {
 			}
 		},
 
+		simplemocha: {
+			all: { 
+				src: '<%= path.test %>**/*.js'
+			}
+		},
+
 		watch: {
 			js: {
 				files: ['<%= path.src.scripts %>**/*.js'],
-				tasks: ['jshint', 'concat', 'uglify']
+				tasks: ['jshint:build', 'simplemocha', 'concat', 'uglify']
 			},
 			jshint: {
 				files: [
@@ -116,7 +126,11 @@ module.exports = function (grunt) {
 					'<%= path.root %>*.js', 
 					'gruntfile.js'
 					],
-				tasks: ['jshint']
+				tasks: ['jshint:build']
+			},
+			jshint_test: {
+				files: ['<%= path.test %>**/*.js'],
+				tasks: ['jshint:test', 'simplemocha']
 			},
 			less: {
 				files: ['<%= path.src.less %>**/*.less'],
@@ -127,7 +141,6 @@ module.exports = function (grunt) {
 				tasks: ['imagemin']
 			}
 		}
-
 
 	});
 
@@ -140,9 +153,10 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-less');
 	grunt.loadNpmTasks('grunt-contrib-concat');
+	grunt.loadNpmTasks('grunt-simple-mocha');
 
 	grunt.registerTask('default', ['build', 'watch']);
-	grunt.registerTask('build', ['less', 'cssmin', 'jshint', 'concat', 'uglify', 'imagemin', 'copy']);
+	grunt.registerTask('build', ['less', 'cssmin', 'jshint:build', 'jshint:test', 'simplemocha', 'concat', 'uglify', 'imagemin', 'copy']);
 	grunt.registerTask('clean-build', ['clean', 'build']);
 
 };
