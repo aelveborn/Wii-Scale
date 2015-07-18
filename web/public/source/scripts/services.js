@@ -36,6 +36,26 @@
         
         factory('socket', ['socketFactory', function (socketFactory) {
             return socketFactory();
-        }]);
+        }]).
+
+        factory('socketCommands', function(){
+            var commands = Object.freeze({
+                DEVICE_CONNECT:         'device connect',
+                DEVICE_DISCONNECT:      'device disconnect',
+
+                USERS_ADD:              'users add',
+                USERS_REMOVE:           'users remove',
+                USERS_RECEIVE_LIST:     'users list',
+
+                ENTRIES_ADD:            'entries add',
+                ENTRIES_REMOVE:         'entries delete',
+                ENTRIES_USER:           'entries user',
+                ENTRIES_RECEIVE_LIST:   'entries list',
+
+                WIISCALE_WEIGHT:        'wiiscale-weight',
+                WIISCALE_STATUS:        'wiiscale-status'
+            });
+            return commands;
+        });
 
 })();

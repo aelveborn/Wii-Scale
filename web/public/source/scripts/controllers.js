@@ -34,7 +34,7 @@
 
     angular.module('app.controllers', []).
 
-        controller('StartController', ['$scope', 'socket', function ($scope, socket) {
+        controller('StartController', ['$scope', 'socket', 'socketCommands', function ($scope, socket, socketCommands) {
 
             $scope.measuring = {
                 count: 0,
@@ -76,8 +76,6 @@
 
                 $scope.status.dismiss();
                 $scope.status.start = true;
-
-                save(0, 20);
             };
 
             function reset() {
@@ -101,20 +99,55 @@
                 }        
             }
 
-            function save(userId, weight) {
-                socket.emit('entries add', {userId: userId, weight: weight});
-            }
+
+            // Device
 
             $scope.connect = function() {
-                socket.emit('device connect');
+                socket.emit(socketCommands.DEVICE_CONNECT);
             };
 
             $scope.disconnect = function() {
-                socket.emit('device disconnect');
+                socket.emit(socketCommands.DEVICE_DISCONNECT);
 
                 $scope.status.dismiss();
                 $scope.status.disconnecting = true; 
             };
+
+
+            // Entries
+
+            function saveEntry(userName, weight) {
+                socket.emit(socketCommands.ENTRIES_ADD, {userName: userName, weight: weight});
+            }
+
+            function getEntriesForUser(userName) {
+                var user = {
+                    name: userName
+                };
+                socket.emit(socketCommands.ENTRIES_USER, user);
+            }
+
+
+            // Users
+
+            function saveUser(name) {
+                var user = {
+                    name: name
+                };
+                socket.emit(socketCommands.USERS_ADD, user);
+            }
+
+            function removeUser(name) {
+                var user = {
+                    name: name
+                };
+                socket.emit(socketCommands.USERS_REMOVE, user);
+            }
+
+            function selectUser(name) {
+                // TODO: Get all entries for user
+                getEntriesForUser(name);
+            }
 
 
             // From wii-scale
@@ -124,7 +157,7 @@
                     $scope.measuring.weight = totalWeight;
                 } else if (count === complete) {
                     $scope.measuring.weight = totalWeight;
-                    save(0, totalWeight);
+                    saveEntry(0, totalWeight); // TODO: Changed from ID to username
 
                     $scope.status.dismiss();
                     $scope.status.done = true;
@@ -134,33 +167,25 @@
                 $scope.measuring.count++;            
             }
 
-            // TODO: Only testning
-            console.log('users add');
-            socket.emit('users add', {name: 'Andreas'});
-            console.log('users remove');
-            socket.emit('users remove', {id: 1});
-
-
             // Socket
 
-            socket.on('users all', function(data) {
+            socket.on(socketCommands.USERS_RECEIVE_LIST, function(data) {
                 // TODO: Implement
-                console.log('users all');
-                console.log(data.users);
+                console.log(data);
             });
 
-            socket.on('entries all', function(data) {
+            socket.on(socketCommands.ENTRIES_RECEIVE_LIST, function(data) {
                 if(data !== null && data !== undefined) {
                     $scope.entries = {};
                     $scope.entries.list = data;
                 }
             });
 
-            socket.on('wiiscale-weight', function(data){
+            socket.on(socketCommands.WIISCALE_WEIGHT, function(data){
                 weightReading(data.totalWeight.toFixed(1));
             });
 
-            socket.on('wiiscale-status', function(data) {
+            socket.on(socketCommands.WIISCALE_STATUS, function(data) {
                 console.log(data.status); // TODO: Remove
 
                 switch(data.status) {

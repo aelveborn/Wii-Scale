@@ -29,8 +29,7 @@
 	SOFTWARE.
 */
 
-var User = function(id, name) {
-	this.id = id;
+var User = function(name) {
 	this.name = name;
 };
 

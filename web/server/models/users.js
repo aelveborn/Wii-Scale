@@ -29,61 +29,29 @@
 	SOFTWARE.
 */
 
-var storage = require('./storage.js');
-
-var Users = function(data) {
-	this.users = data.users || [];
+var Users = function(collection) {
+	this.users = collection;
 };
 
 Users.prototype.add = function(user) {
-	this.users.push(user);
+	if(this.findUserByName(user.name) === null) {		
+		this.users.insert(user);
+	}
 };
 
 Users.prototype.get = function() {
-	// Returns all users
-	return this.users;
+	return this.users.data;
 };
 
 Users.prototype.remove = function(user) {
-	var result = [];
-	for (var i = this.users.length - 1; i >= 0; i--) {
-		if(this.users[i].id !== user.id) {
-			result.push(this.users[i]);
-		}
-	};
-	this.users = result;
+	this.users.remove(user);
 };
 
-Users.prototype.newId = function() {
-	var id = 0;
-	for (var i = this.users.length - 1; i >= 0; i--) {
-		if(this.users[i].id > id) {
-			id = this.users[i].id;
-		}
-	};
-	return ++id;
-};
-
-
-Users.prototype.findUserById = function(id) {
-	// Returns User object
-	for (var i = this.users.length - 1; i >= 0; i--) {
-		if(this.users[i].id === id) {
-			return this.users[i];
-		};
-	};
-	return null;
-};
-
-
-Users.prototype.save = function() {
-	// Save all users
-	var result = this.users;
-	storage.load(function(err, data) {
-		if(err) throw err;
-		data.users = result;
-		storage.save(data);
+Users.prototype.findUserByName = function(name) {
+	var user = this.users.findObject({
+		name: { '$eq': name }
 	});
+	return user;
 };
 
 module.exports = Users;

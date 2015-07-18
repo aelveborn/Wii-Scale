@@ -29,40 +29,34 @@
 	SOFTWARE.
 */
 
-var Entry = require('./entry.js');
-var storage = require('./storage.js');
+var loki = require('lokijs'),
+	db = new loki('app-data.json');
 
-var Entries = function(data) {
-	this.entries = data.entries || [];
+var Entries = function(collection) {
+	this.entries = collection;
 };
 
 Entries.prototype.add = function(entry) {
-	this.entries.push(entry);
+	this.entries.insert(entry);
 };
 
 Entries.prototype.get = function() {
-	return this.entries;
+	return this.entries.data;
 };
 
 Entries.prototype.remove = function(entry) {
-	var result = [];
-
-	for (var i = 0; i < this.entries.length; i++) {
-		if(this.entries[i].dateTime !== entry.dateTime) {
-			result.push(this.entries[i]);
-		}
-	}
-
-	this.entries = result;
+	this.entries.remove(entry);
 };
 
-Entries.prototype.save = function() {
-	// Save all entries
-	var result = this.entries;
-	storage.load(function(err, data) {
-		if(err) throw err;
-		data.entries = result;
-		storage.save(data);
+Entries.prototype.getUserEntries = function(user) {
+	return this.entries.find({
+		userName: { '$eq': user.name }
+	});
+};
+
+Entries.prototype.removeUserEntries = function(user) {
+	this.entries.removeWhere({
+		userName: { '$eq': user.name }
 	});
 };
 

@@ -30,34 +30,43 @@
 */
 
 
-var entry = require('../models/entry.js');
-var entries = require('../models/entries.js');
+var loki = require('lokijs'),
+	db = new loki('app-data.json');
+
+var Entry = require('../models/entry.js');
+var Entries = require('../models/entries.js');
+var User = require('../models/user.js');
+var Users = require('../models/users.js');
 
 var NO_PREVIOUS_STATUS = "NO PREVIOUS STATUS";
-var users = -1; // Start at negative one since wii-scale becomes a user
-var last = { status: NO_PREVIOUS_STATUS };
 
-module.exports = function (io) {
 
-	io.on('connection', function(socket){
+module.exports = function(io) {
+
+	var connectedUsers = -1; // Start at negative one since wii-scale becomes a user
+	var lastCommand = { status: NO_PREVIOUS_STATUS };
+
+	var users = new Users(db.getCollection('users') || db.addCollection('users'));
+	var entries = new Entries(db.getCollection('entries') || db.addCollection('entries'));
+
+	io.on('connection', function(socket) {
+
 		// Server
 		// -----------------------------------
 
-		users++;
-
-		// Send current status to new users
-		socket.emit('wiiscale-status', last);
+		connectedUsers++;
 
 		// Send all saved entries to the user
-		entries.getEntries(function(err, data) {
-			socket.emit('entries all', data);
-		});
+		socket.emit('entries list', entries.get());		// TODO: Should probably get entries based on user
 
+		// Send current status to new users
+		socket.emit('wiiscale-status', lastCommand);
+		
 		// Disconnect wii-scale if no users is on the site
 		socket.on('disconnect', function() {
-			users--;
-			if(users === 0) {
-				last.status = NO_PREVIOUS_STATUS;
+			connectedUsers--;
+			if(connectedUsers === 0) {
+				lastCommand.status = NO_PREVIOUS_STATUS;
 				io.emit('wiiscale-disconnect');
 			}
 		});
@@ -74,8 +83,47 @@ module.exports = function (io) {
 			io.emit('wiiscale-disconnect');
 		});
 
-		socket.on('entries new', function(weight) {
-			entries.addEntry(entry.create(weight));
+		socket.on('entries add', function(params) {
+			var item = new Entry(params.userName, params.weight);
+			entries.add(item);
+			db.saveDatabase();
+			socket.emit('entries list', entries.get());
+		});
+
+		socket.on('entries delete', function(entry) {
+			entries.remove(entry);
+			db.saveDatabase();
+			socket.emit('entries list', entries.get());
+		});
+
+		socket.on('entries user', function(params) {
+			var user = new User(params.name);
+			socket.emit('entries list', entries.getUserEntries(user));
+		});
+
+		socket.on('users get', function() {
+			socket.emit('users list', users.get());
+		});
+
+		socket.on('users add', function(params) {
+			if(users.findUserByName(params.name) !== null) {
+				users.add(new User(params.name));
+				db.saveDatabase();
+				socket.emit('users list', users.get());
+			} else {
+				// TODO: Emit error on else? "User already exist"
+			}
+		});
+
+		socket.on('users remove', function(params) {
+			var user = users.findUserByName(params.name);
+			if(user !== null) {
+				users.remove(user);
+				db.saveDatabase();
+				socket.emit('users list', users.get());
+			} else {
+				// TODO: Emit error on else? "Could not find user"
+			}			
 		});
 
 
@@ -95,4 +143,5 @@ module.exports = function (io) {
 			io.emit('wiiscale-weight', data);
 		});
 	});
+
 };

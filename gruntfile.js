@@ -66,10 +66,10 @@ module.exports = function (grunt) {
 
 		jshint: {
 			build: {
-				src: ['<%= path.src.scripts %>*.js', 
-					'<%= path.root %>*.js', 
-					'<%= path.server.root %>*.js',
-					'gruntfile.js']
+				src: ['<%= path.src.scripts %>**/*.js', 'gruntfile.js']
+			},
+			server: {
+				src: ['<%= path.server.root %>**/*.js', '<%= path.root %>*.js']
 			},
 			test: {
 				src: ['<%= path.test %>**/*.js']
@@ -118,17 +118,13 @@ module.exports = function (grunt) {
 		watch: {
 			js: {
 				files: ['<%= path.src.scripts %>**/*.js'],
-				tasks: ['jshint:build', 'simplemocha', 'concat', 'uglify']
+				tasks: ['jshint:build', 'concat', 'uglify']
 			},
-			jshint: {
-				files: [
-					'<%= path.server.root %>*.js',
-					'<%= path.root %>*.js', 
-					'gruntfile.js'
-					],
-				tasks: ['jshint:build']
+			js_server: {
+				files: ['<%= path.server.root %>**/*.js', '<%= path.root %>*.js'],
+				tasks: ['jshint:server', 'simplemocha']
 			},
-			jshint_test: {
+			test: {
 				files: ['<%= path.test %>**/*.js'],
 				tasks: ['jshint:test', 'simplemocha']
 			},
