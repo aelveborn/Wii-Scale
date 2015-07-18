@@ -105,15 +105,6 @@
 
                     $scope.controls.remove = function(entry) {
                         socket.emit('entries delete', entry);
-
-                        var result = [];
-                        for (var i = 0; i < $scope.entries.list.length; i++) {
-                            if($scope.entries.list[i] !== entry) {
-                                result.push($scope.entries.list[i]);
-                            }
-                        }
-                        $scope.entries.list = result;
-                        controlsHandler();
                     };
 
                     $scope.$watch('entries.list.length', function(newValue, oldValue) {

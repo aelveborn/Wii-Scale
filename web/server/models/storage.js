@@ -33,32 +33,55 @@
 	Storage structure:
 
 	{
-		entries: [entry, entry, ...]
+		entries: [entry, entry, ...],
+		users: [user, user, ...]
 	}
 
 */
 
 var fs = require('fs');
 var path = "./app-data.json";
-var storage = {};
+var locked = false;
 
-storage.save = function(data) {
+var Storage = function() {
+	// Singleton
+	if(arguments.callee._singletonInstance) {
+		return arguments.callee._singletonInstance;
+	}
+	arguments.callee._singletonInstance = this;
+};
+
+function lock() {
+	//while(locked) {}
+	locked = true;
+}
+
+function unlock() {
+	locked = false;
+}
+
+Storage.save = function(data) {
+	lock();
 	fs.writeFile(path, JSON.stringify(data), function(err) {
 		if(err) throw err;
+		unlock();
 	});
 };
 
-storage.load = function(callback) {
+Storage.load = function(callback) {
+	lock();
 	fs.exists(path, function(exists) {
 		if(exists) {
 			fs.readFile(path, function(err, data) {
 				if(err) throw err;
 				callback(null, JSON.parse(data));
+				unlock();
 			});
 		} else {
 			callback(null, null);
+			unlock();
 		}
 	});
 };
 
-module.exports = storage;
+module.exports = Storage;

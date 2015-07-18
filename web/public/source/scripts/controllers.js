@@ -76,6 +76,8 @@
 
                 $scope.status.dismiss();
                 $scope.status.start = true;
+
+                save(0, 20);
             };
 
             function reset() {
@@ -99,8 +101,8 @@
                 }        
             }
 
-            function save(weight) {
-                socket.emit('entries new', weight);
+            function save(userId, weight) {
+                socket.emit('entries add', {userId: userId, weight: weight});
             }
 
             $scope.connect = function() {
@@ -122,7 +124,7 @@
                     $scope.measuring.weight = totalWeight;
                 } else if (count === complete) {
                     $scope.measuring.weight = totalWeight;
-                    save(totalWeight);
+                    save(0, totalWeight);
 
                     $scope.status.dismiss();
                     $scope.status.done = true;
@@ -132,8 +134,20 @@
                 $scope.measuring.count++;            
             }
 
+            // TODO: Only testning
+            console.log('users add');
+            socket.emit('users add', {name: 'Andreas'});
+            console.log('users remove');
+            socket.emit('users remove', {id: 1});
+
 
             // Socket
+
+            socket.on('users all', function(data) {
+                // TODO: Implement
+                console.log('users all');
+                console.log(data.users);
+            });
 
             socket.on('entries all', function(data) {
                 if(data !== null && data !== undefined) {

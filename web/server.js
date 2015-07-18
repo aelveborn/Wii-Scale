@@ -48,8 +48,11 @@ app.get('/partials/:page', routes.partials);
 
 // TODO: Move io to routers/sockets
 
-var entry = require('./server/models/entry.js');
-var entries = require('./server/models/entries.js');
+var Entry = require('./server/models/entry.js');
+var Entries = require('./server/models/entries.js');
+var storage = require('./server/models/storage.js');
+var Users = require('./server/models/users.js');
+var User = require('./server/models/user.js');
 
 var NO_PREVIOUS_STATUS = "NO PREVIOUS STATUS";
 var users = -1; // Start at negative one since wii-scale becomes a user
@@ -67,8 +70,11 @@ io.on('connection', function(socket){
 	socket.emit('wiiscale-status', last);
 
 	// Send all saved entries to the user
-	entries.getEntries(function(err, data) {
-		socket.emit('entries all', data);
+	storage.load(function(err, data) {
+		if(data !== null) {
+			var entries = new Entries(data);
+			socket.emit('entries all', entries.get());
+		}
 	});
 
 	// Disconnect wii-scale if no users is on the site
@@ -92,12 +98,67 @@ io.on('connection', function(socket){
 		io.emit('wiiscale-disconnect');
 	});
 
-	socket.on('entries new', function(weight) {
-		entries.addEntry(entry.create(weight));
+	socket.on('entries add', function(params) {
+		storage.load(function(err, data) {
+			if(data !== null) {
+				var item = new Entry(params.userId, params.weight);
+				var entries = new Entries(data);
+				entries.add(item);
+				entries.save();
+				socket.emit('entries all', entries.get());
+			}
+		});
 	});
 
 	socket.on('entries delete', function(entry) {
-		entries.removeEntry(entry);
+		storage.load(function(err, data) {
+			if(data !== null) {
+				var entries = new Entries(data);
+				entries.remove(entry);
+				entries.save();
+				socket.emit('entries all', entries.get());
+			}
+		});
+	});
+
+	socket.on('users get', function() {
+		storage.load(function(err, data) {
+			if(data !== null) {
+				var users = new Users(data);
+				socket.emit('users all', users.get());
+			}
+		});
+	});
+
+	socket.on('users add', function(params) {
+		var name = params.name;
+		storage.load(function(err, data) {
+			if(data !== null) {
+				var users = new Users(data);
+				var user = new User(users.newId(), name);
+				users.add(user);
+				users.save();
+				socket.emit('users all', users.get());
+			}
+		});
+	});
+
+	socket.on('users remove', function(params) {
+		var id = params.id;
+		storage.load(function(err, data) {
+			if(data !== null) {
+				var users = new Users(data);
+				var user = users.findUserById(id);
+				if(user !== null) {
+					users.remove(user);
+				}
+
+				io.emit('wiiscale-status', {status: 'removes: ' + user.id});
+
+				users.save();
+				socket.emit('users all', users.get());
+			}
+		});
 	});
 
 

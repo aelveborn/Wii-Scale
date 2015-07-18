@@ -29,57 +29,40 @@
 	SOFTWARE.
 */
 
+var Entry = require('./entry.js');
 var storage = require('./storage.js');
-var Entries = {};
 
-Entries.addEntry = function(entry) {	
-	storage.load(function(err, data) {
-		if(err) throw err;
-
-		var result = [];
-		var datastore = {};
-
-		if(data !== null) {
-			datastore = data;
-			result = datastore.entries;
-		}
-
-		result.push(entry);
-		datastore.entries = result;
-		storage.save(datastore);
-	});
+var Entries = function(data) {
+	this.entries = data.entries || [];
 };
 
-Entries.getEntries = function(callback) {
-	storage.load(function(err, data) {
-		if(err) throw err;
-
-		var entries = [];
-		if(data !== null) {
-			entries = data.entries;
-		}
-
-		callback(null, entries);
-	});
+Entries.prototype.add = function(entry) {
+	this.entries.push(entry);
 };
 
-Entries.removeEntry = function(entry) {
+Entries.prototype.get = function() {
+	return this.entries;
+};
+
+Entries.prototype.remove = function(entry) {
+	var result = [];
+
+	for (var i = 0; i < this.entries.length; i++) {
+		if(this.entries[i].dateTime !== entry.dateTime) {
+			result.push(this.entries[i]);
+		}
+	}
+
+	this.entries = result;
+};
+
+Entries.prototype.save = function() {
+	// Save all entries
+	var result = this.entries;
 	storage.load(function(err, data) {
 		if(err) throw err;
-
-		if(data !== null) {
-			var result = [];
-			var datastore = {};
-
-            for (var i = 0; i < data.entries.length; i++) {
-                if(data.entries[i].dateTime !== entry.dateTime) {
-                    result.push(data.entries[i]);
-                }
-            }
-
-			datastore.entries = result;
-			storage.save(datastore);
-		}
+		data.entries = result;
+		storage.save(data);
 	});
 };
 

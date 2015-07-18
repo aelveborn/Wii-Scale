@@ -29,11 +29,10 @@
 	SOFTWARE.
 */
 
-var Entry = function(weight) {
+var Entry = function(userId, weight) {
 	this.dateTime = new Date();
 	this.weight = weight;
+	this.userId = userId;
 };
 
-exports.create = function(weight) {
-	return new Entry(weight);
-};
+module.exports = Entry;
