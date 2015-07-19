@@ -229,8 +229,7 @@
             };
 
             $scope.users.remove = function(user) {
-                users.remove(user);
-                $scope.users.select($rootScope.defaultUser);
+                $scope.users.removeUser = user;
             };
 
             $scope.users.select = function(user) {

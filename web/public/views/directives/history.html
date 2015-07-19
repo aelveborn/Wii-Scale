@@ -1,4 +1,5 @@
 <div class="history">
+	<delete-entry-modal entry="removeEntry"></delete-entry-modal>
 	<ul class="list-group">
 
 		<li class="list-group-item" ng-show="entries.list.length === 0">
@@ -7,7 +8,8 @@
 
 		<li class="list-group-item animate-ng-repeat" ng-repeat="entry in entries.list | orderBy: '-dateTime' | limitTo: quantity track by $index">
 			
-			<a href="#" class="delete" ng-click="controls.remove(entry)">
+			<a href="#" class="delete" ng-click="controls.remove(entry)"
+				data-toggle="modal" data-target="#deleteEntryModal">
 				<i class="fa fa-trash-o"></i>
 			</a>
 			<span class="badge">{{entry.weight | number:1}} kg</span>			

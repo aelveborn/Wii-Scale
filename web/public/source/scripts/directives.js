@@ -104,7 +104,7 @@
                     };
 
                     $scope.controls.remove = function(entry) {
-                        entries.remove(entry);
+                        $scope.removeEntry = entry;
                     };
 
                     $scope.$watch('entries.list.length', function(newValue, oldValue) {
@@ -112,6 +112,81 @@
                             return;
                         }
                         controlsHandler();
+                    });
+                }
+            };
+        }]).
+
+        directive('deleteUserModal', ['$rootScope', 'entries', 'users', function ($rootScope, entries, users){
+            return {
+                scope: {
+                    user: '=',
+                },
+                restrict: 'E',
+                templateUrl: '/directives/delete-user-modal',
+                link: function($scope, iElm, iAttrs, controller) {
+
+                    $scope.deleteUser = function(user) {
+                        users.remove(user);
+
+                        $rootScope.selectedUser = $rootScope.defaultUser;
+                        entries.getUserEntries($rootScope.defaultUser);
+                    };
+
+                    $scope.$watch(iAttrs.visible, function(value){
+                        if(value === true) {
+                            $(iElm).modal('show');
+                        } else {
+                            $(iElm).modal('hide');
+                        }
+                    });
+
+                    $(iElm).on('shown.bs.modal', function(){
+                        $scope.$apply(function(){
+                            $scope.$parent[iAttrs.visible] = true;
+                        });
+                    });
+
+                    $(iElm).on('hidden.bs.modal', function(){
+                        $scope.$apply(function(){
+                            $scope.$parent[iAttrs.visible] = false;
+                        });
+                    });
+                }
+            };
+        }]).
+
+        directive('deleteEntryModal', ['$rootScope', 'entries', 'users', function ($rootScope, entries, users){
+            return {
+                scope: {
+                    entry: '=',
+                },
+                restrict: 'E',
+                templateUrl: '/directives/delete-entry-modal',
+                link: function($scope, iElm, iAttrs, controller) {
+
+                    $scope.deleteEntry = function(entry) {
+                        entries.remove(entry);
+                    };
+
+                    $scope.$watch(iAttrs.visible, function(value){
+                        if(value === true) {
+                            $(iElm).modal('show');
+                        } else {
+                            $(iElm).modal('hide');
+                        }
+                    });
+
+                    $(iElm).on('shown.bs.modal', function(){
+                        $scope.$apply(function(){
+                            $scope.$parent[iAttrs.visible] = true;
+                        });
+                    });
+
+                    $(iElm).on('hidden.bs.modal', function(){
+                        $scope.$apply(function(){
+                            $scope.$parent[iAttrs.visible] = false;
+                        });
                     });
                 }
             };

@@ -1,0 +1,25 @@
+<div class="modal fade" id="deleteEntryModal" tabindex="-1" role="dialog" aria-labelledby="deleteEntryModalLabel">
+	<div class="modal-dialog modal-md" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="deleteEntryModalLabel">
+					Delete record?
+				</h4>
+			</div>
+			<div class="modal-body">
+				Do you whant to delete you weighing made <span class="label label-complement">{{ entry.dateTime | date: 'EEE, d MMM yyyy @ hh:mm'}}</span> of <span class="label label-complement">{{entry.weight | number: 1}} kg</span> ?
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">
+					No
+				</button>
+				<button type="button" class="btn btn-success" data-dismiss="modal" ng-click="deleteEntry(entry)">
+					Yes, delete
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

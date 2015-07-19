@@ -34,6 +34,7 @@ module.exports = function (grunt) {
 				    '<%= path.dist.scripts %>scripts.js': [
 				    	'<%= path.vendor %>jquery/dist/jquery.js',
 				    	'<%= path.vendor %>bootstrap/js/dropdown.js',
+				    	'<%= path.vendor %>bootstrap/js/modal.js',
 				    	'<%= path.vendor %>angular/angular.js',
 				    	'<%= path.vendor %>angular-socket-io/socket.js',
 				    	'<%= path.vendor %>angular-route/angular-route.js',

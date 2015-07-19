@@ -1,0 +1,25 @@
+<div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="deleteUserModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="deleteUserModalLabel">
+					Delete {{user.name}}
+				</h4>
+			</div>
+			<div class="modal-body">
+				Do you whant to delete the user <span class="label label-complement">{{user.name}}</span> ? This will delete all weighings for that user and you wont be able to get the data back. Ever.
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">
+					No
+				</button>
+				<button type="button" class="btn btn-success" data-dismiss="modal" ng-click="deleteUser(user)">
+					Yes, delete {{user.name}}
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
