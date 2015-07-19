@@ -1,7 +1,11 @@
 <div class="history">
 	<ul class="list-group">
 
-		<li class="list-group-item" ng-repeat="entry in entries.list | orderBy: '-dateTime' | limitTo: quantity track by $index">
+		<li class="list-group-item" ng-show="entries.list.length === 0">
+			Oh maaan! No history yet
+		</li>
+
+		<li class="list-group-item animate-ng-repeat" ng-repeat="entry in entries.list | orderBy: '-dateTime' | limitTo: quantity track by $index">
 			
 			<a href="#" class="delete" ng-click="controls.remove(entry)">
 				<i class="fa fa-trash-o"></i>
@@ -9,13 +13,9 @@
 			<span class="badge">{{entry.weight | number:1}} kg</span>			
 			{{entry.dateTime | date:'d MMM yyyy @ hh:mm'}}
 
-		</li>
+		</li>		
 
-		<li class="list-group-item" ng-hide="entries.list.length > 0">
-			Oh maaan! No history yet
-		</li>
-
-		<li class="list-group-item" ng-show="controls.showMore || controls.showReset">
+		<li class="list-group-item animate-ng-show" ng-show="controls.showMore || controls.showReset">
 			<div class="row">
 
 				<div class="col-xs-6">

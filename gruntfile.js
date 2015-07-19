@@ -37,6 +37,7 @@ module.exports = function (grunt) {
 				    	'<%= path.vendor %>angular/angular.js',
 				    	'<%= path.vendor %>angular-socket-io/socket.js',
 				    	'<%= path.vendor %>angular-route/angular-route.js',
+				    	'<%= path.vendor %>angular-animate/angular-animate.js',
 				    	'<%= path.src.scripts %>**/*.js'
 				    	]
 				}

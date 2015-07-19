@@ -34,6 +34,7 @@
 
     angular.module('app', [
         'ngRoute',
+        'ngAnimate',
         'btford.socket-io',
         'app.controllers',
         'app.directives',

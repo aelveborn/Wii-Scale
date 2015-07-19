@@ -55,6 +55,74 @@ h1, h2, h3, h4, h5, h6 {
 	}
 }
 
+/* Animations */
+.animate-ng-repeat {
+
+	&.ng-enter,
+	&.ng-leave,
+	&.ng-move {
+		-webkit-transition: all linear 0.5s;
+		transition: all linear 0.5s;
+	}
+
+	&.ng-enter-stagger,
+	&.ng-leave-stagger,
+	&.ng-move-stagger {
+		/* 50ms between each item being animated after the other */
+		-webkit-transition-delay:50ms;
+		transition-delay:50ms;
+
+		/* this is required here to prevent any CSS inheritance issues */
+		-webkit-transition-duration:0;
+		transition-duration:0;
+	}
+
+	&.ng-enter {
+		opacity: 0;
+
+		&.ng-enter-active {
+			opacity: 1;
+		}
+	}
+
+	&.ng-move {
+		opacity: 0;
+
+		&.ng-move-active {
+			opacity: 1;
+		}
+	}
+
+	&.ng-leave {
+		opacity: 1;
+
+		&.ng-leave-active {
+			opacity: 0;
+		}
+	}
+}
+
+.animate-ng-show {
+	opacity: 1;
+	-webkit-transition: all linear 0.5s;
+	transition: all linear 0.5s;
+
+	&.animate-fast {
+		-webkit-transition: all linear 0.2s;
+		transition: all linear 0.2s;
+	}
+	
+	&.ng-hide-add {
+		-webkit-transition: none;
+		transition: none;
+	}
+
+	&.ng-hide {
+		opacity: 0;
+	}
+}
+
+/* Styles */
 .navbar {
 	border: 0;
 	margin-bottom: 0;
@@ -232,6 +300,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .status-bar {
+	min-height: 70px;
 	padding-top: 30px;
 	padding-bottom: 20px;
 	margin-bottom: 0;
@@ -268,6 +337,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .progress {
 	height: 2px;
+	margin-bottom: 40px;
 }
 
 .weight {
