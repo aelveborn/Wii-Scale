@@ -57,7 +57,7 @@ module.exports = function(io) {
 		connectedUsers++;
 
 		// Send all saved entries to the user
-		socket.emit('entries list', entries.get());		// TODO: Should probably get entries based on user
+		socket.emit('users list', users.get());
 
 		// Send current status to new users
 		socket.emit('wiiscale-status', lastCommand);
@@ -101,17 +101,13 @@ module.exports = function(io) {
 			socket.emit('entries list', entries.getUserEntries(user));
 		});
 
-		socket.on('users get', function() {
-			socket.emit('users list', users.get());
-		});
-
 		socket.on('users add', function(params) {
-			if(users.findUserByName(params.name) !== null) {
+			if(users.findUserByName(params.name) === null) {
 				users.add(new User(params.name));
 				db.saveDatabase();
 				socket.emit('users list', users.get());
 			} else {
-				// TODO: Emit error on else? "User already exist"
+				// TODO: "User already exist"
 			}
 		});
 
@@ -122,7 +118,7 @@ module.exports = function(io) {
 				db.saveDatabase();
 				socket.emit('users list', users.get());
 			} else {
-				// TODO: Emit error on else? "Could not find user"
+				// TODO: "Could not find user"
 			}			
 		});
 

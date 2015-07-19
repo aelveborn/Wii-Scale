@@ -40,7 +40,16 @@
         'app.services'
     ]).
 
-    config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
+    run(['$rootScope', 'entries', function ($rootScope, entries) {
+        var defaultUser = {
+            name: "Guest"
+        };
+        $rootScope.defaultUser = defaultUser;
+        $rootScope.selectedUser = defaultUser;
+        entries.getUserEntries(defaultUser);
+    }]).
+
+    config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
 
         $routeProvider.
             when('/', {

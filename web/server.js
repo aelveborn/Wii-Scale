@@ -32,6 +32,7 @@
 var app = require('express')();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
+var socket = require('./server/routes/socket.js')(io);
 var routes = require('./server/routes/index.js');
 
 var host = process.env.npm_package_config_host;
@@ -44,8 +45,6 @@ app.get('/', routes.index);
 app.get('/directives/:page', routes.directives);
 app.get('/partials/:page', routes.partials);
 
-// Sockets
-var socket = require('./server/routes/socket.js')(io);
 
 exports.start = function() {
 	server.listen(port, host, function(){

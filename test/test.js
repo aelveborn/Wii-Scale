@@ -41,22 +41,6 @@ var loki = require('lokijs'),
 
 describe("Server", function () {
 
-	describe("Test", function() {
-
-		it('should test database', function () {
-			var test = db.addCollection('test');
-			test.insert({name: "Andreas"});
-			//db.saveDatabase();
-			expect(true).to.equal(true);
-		});
-
-		it('should read database', function () {
-			var test = db.getCollection('test') || db.addCollection('test');
-			expect(test.data).length(1);
-		});
-
-	});
-
 	describe("User", function () {
 	
 		it('should create a user', function() {

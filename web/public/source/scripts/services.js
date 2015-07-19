@@ -56,6 +56,59 @@
                 WIISCALE_STATUS:        'wiiscale-status'
             });
             return commands;
-        });
+        }).
+
+        factory('device', ['socket', 'socketCommands', function (socket, socketCommands){
+            var device = {
+                connect: connect,
+                disconnect: disconnect,
+            };
+
+            return device;
+
+            function connect() {
+                socket.emit(socketCommands.DEVICE_CONNECT);
+            }
+
+            function disconnect() {
+                socket.emit(socketCommands.DEVICE_DISCONNECT);
+            }
+        }]).
+
+        factory('users', ['socket', 'socketCommands', function (socket, socketCommands){
+            var users = {
+                add: add,
+                remove: remove,
+            };
+
+            return users;
+
+            function remove(user) {
+                socket.emit(socketCommands.USERS_REMOVE, user);
+            }
+
+            function add(user) {
+                socket.emit(socketCommands.USERS_ADD, user);
+            }
+
+        }]).
+
+        factory('entries', ['socket', 'socketCommands', function (socket, socketCommands){
+            var entries = {
+                add: add,
+                getUserEntries: getUserEntries,
+            };
+
+            return entries;
+
+            function add(user, weight) {
+                socket.emit(socketCommands.ENTRIES_ADD, {userName: user.name, weight: weight});
+            }
+
+            function getUserEntries(user) {
+                socket.emit(socketCommands.ENTRIES_USER, user);
+            }
+
+        }]);
 
 })();

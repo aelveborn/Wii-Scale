@@ -32,13 +32,13 @@
 
 	<nav class="navbar navbar-default">
 	    <div class="container-fluid">
-	        <div class="navbar-header">
+	        <div class="navbar-header hidden-xs">
 	            <a class="navbar-brand" href="/">
 	                Wii-Scale
 	            </a>
-	        </div>
+	        </div>	        
 
-	        <ul class="nav navbar-nav navbar-right">
+	        <ul class="nav navbar-nav navbar-right nav-controls">
 	            <li>
 	                <a href="#" class="success" ng-click="connect()" ng-show="controls.connect">
 	                    <i class="fa fa-compress"></i>
@@ -51,6 +51,43 @@
 	                    Disconnect
 	                </a>
 	            </li>
+	        </ul>
+
+	        <ul class="nav navbar-nav navbar-right nav-users" ng-controller="UserController">
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+						<i class="fa fa-user dropdown-icon"></i>
+						{{ selectedUser.name }}
+						<i class="fa fa-angle-down dropdown-arrow"></i>
+					</a>
+					<ul class="dropdown-menu dropdown-menu-right">
+						<li class="dropdown-header">
+							Switch user
+						</li>
+						<li>
+							<a href="#" ng-click="users.select(defaultUser)">
+								<span>Guest</span>
+							</a>
+						</li>
+
+						<li ng-repeat="user in users.list track by $index">							
+							<a href="#">
+								<i class="fa fa-trash-o" ng-click="users.remove(user)"></i>
+								<span ng-click="users.select(user)">{{user.name}}</span>
+							</a>
+						</li>
+
+						<li role="separator" class="divider"></li>
+						<li>
+							<div class="input-group">
+								<input type="text" class="form-control" placeholder="New user" ng-model="users.name">
+								<span class="input-group-btn">
+									<button class="btn btn-default" type="button" ng-click="users.create()">Add</button>
+								</span>
+							</div>
+						</li>
+					</ul>
+				</li>
 	        </ul>
 	    </div>
 	</nav>
@@ -76,7 +113,7 @@
 	            <status type="info" ng-show="status.ready">
 	                <i class="fa fa-male"></i>
 	                <p>
-	                    Step on your board now
+	                    {{ selectedUser.name }} - Step on your board now
 	                </p>
 	            </status>
 
@@ -127,7 +164,7 @@
 	        <div class="col-xs-12 col-md-4 col-md-offset-1">
 	        	<h4 class="icon-heading">
 	        		<i class="fa fa-bookmark-o"></i>
-	        		History
+	        		History for {{ selectedUser.name }}
 	        	</h4>
 	            <history entries="entries"></history>
 	        </div>
