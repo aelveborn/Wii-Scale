@@ -30,24 +30,42 @@
 */
 
 
-var loki = require('lokijs'),
-	db = new loki('app-data.json');
-
 var Entry = require('../models/entry.js');
 var Entries = require('../models/entries.js');
 var User = require('../models/user.js');
 var Users = require('../models/users.js');
 
+var users = null;
+var entries = null;
 var NO_PREVIOUS_STATUS = "NO PREVIOUS STATUS";
+
+var loki = require('lokijs'),
+	db = new loki('app-data.json', {
+		autoload: true,
+		autoloadCallback: loadHandler
+	});
+
+function loadHandler () {
+	// Users
+	var userColl = db.getCollection('users');
+	if(userColl === null) {
+		userColl = db.addCollection('users');
+	}
+	users = new Users(userColl);
+
+	// Entries
+	var entriesColl = db.getCollection('entries');
+	if(entriesColl === null) {
+		entriesColl = db.addCollection('entries');
+	}
+	entries = new Entries(entriesColl);
+}
 
 
 module.exports = function(io) {
 
 	var connectedUsers = -1; // Start at negative one since wii-scale becomes a user
 	var lastCommand = { status: NO_PREVIOUS_STATUS };
-
-	var users = new Users(db.getCollection('users') || db.addCollection('users'));
-	var entries = new Entries(db.getCollection('entries') || db.addCollection('entries'));
 
 	io.on('connection', function(socket) {
 
@@ -87,13 +105,17 @@ module.exports = function(io) {
 			var item = new Entry(params.userName, params.weight);
 			entries.add(item);
 			db.saveDatabase();
-			socket.emit('entries list', entries.get());
+
+			var user = new User(params.userName);
+			socket.emit('entries list', entries.getUserEntries(user));
 		});
 
 		socket.on('entries delete', function(entry) {
 			entries.remove(entry);
 			db.saveDatabase();
-			socket.emit('entries list', entries.get());
+
+			var user = new User(entry.userName);
+			socket.emit('entries list', entries.getUserEntries(user));
 		});
 
 		socket.on('entries user', function(params) {

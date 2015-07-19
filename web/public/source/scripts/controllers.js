@@ -79,12 +79,9 @@
             };
 
             function reset() {
-                $scope.measuring = {
-                    count: 0,
-                    complete: 50,
-                    progress: 0,
-                    weight: 0 // TODO: Maybe not resetting this
-                };
+                $scope.measuring.count = 0;
+                $scope.measuring.complete = 50;
+                $scope.measuring.progress = 0;
                 setProgress();
             }         
 
@@ -116,10 +113,10 @@
 
             // From wii-scale
 
-            function weightReading(totalWeight) {       
+            function weightReading(totalWeight) {
                 if(!done()) {     
                     $scope.measuring.weight = totalWeight;
-                } else if (count === complete) {
+                } else if ($scope.measuring.count === $scope.measuring.complete) {
                     $scope.measuring.weight = totalWeight;
 
                     entries.add($rootScope.selectedUser, totalWeight);

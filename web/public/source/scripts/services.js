@@ -96,6 +96,7 @@
         factory('entries', ['socket', 'socketCommands', function (socket, socketCommands){
             var entries = {
                 add: add,
+                remove: remove,
                 getUserEntries: getUserEntries,
             };
 
@@ -103,6 +104,10 @@
 
             function add(user, weight) {
                 socket.emit(socketCommands.ENTRIES_ADD, {userName: user.name, weight: weight});
+            }
+
+            function remove(entry) {
+                socket.emit(socketCommands.ENTRIES_REMOVE, entry);
             }
 
             function getUserEntries(user) {

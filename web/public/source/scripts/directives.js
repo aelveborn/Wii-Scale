@@ -57,7 +57,7 @@
             };
         })
 
-        .directive('history', ['socket', 'socketCommands', function(socket, socketCommands){
+        .directive('history', ['entries', function (entries){
             return {
                 scope: {
                     entries: '='
@@ -104,7 +104,7 @@
                     };
 
                     $scope.controls.remove = function(entry) {
-                        socket.emit(socketCommands.ENTRIES_REMOVE, entry);
+                        entries.remove(entry);
                     };
 
                     $scope.$watch('entries.list.length', function(newValue, oldValue) {
