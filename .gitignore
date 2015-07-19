@@ -5,6 +5,9 @@
 # Storage
 app-data.json
 
+# Exclude web build files
+!web/public/build/
+
 # Logs
 web/logs
 web/*.log
