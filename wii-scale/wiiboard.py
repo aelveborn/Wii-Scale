@@ -65,7 +65,7 @@ class Wiiboard:
 
  		self.status = "Disconnected"
  		self.lastEvent = BoardEvent(0,0,0,0,False,False)
- 		self.mass = None
+ 		self.mass = self.lastEvent
 
 		try:
 			self.receivesocket = bluetooth.BluetoothSocket(bluetooth.L2CAP)

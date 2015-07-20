@@ -29,25 +29,29 @@
 	SOFTWARE.
 */
 
-var app = require('express')();
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
-var socket = require('./server/routes/socket.js')(io);
-var routes = require('./server/routes/index.js');
-
-var host = process.env.npm_package_config_host;
-var port = process.env.npm_package_config_port;
-
-app.use('/static', require('express').static('web/public/build'));
-
-// Routes
-app.get('/', routes.index);
-app.get('/directives/:page', routes.directives);
-app.get('/partials/:page', routes.partials);
-
-
-exports.start = function() {
-	server.listen(port, host, function(){
-		console.log('Listening on ' + host + ':' + port);
-	});
+var Users = function(collection) {
+	this.users = collection;
 };
+
+Users.prototype.add = function(user) {
+	if(this.findUserByName(user.name) === null) {		
+		this.users.insert(user);
+	}
+};
+
+Users.prototype.get = function() {
+	return this.users.data;
+};
+
+Users.prototype.remove = function(user) {
+	this.users.remove(user);
+};
+
+Users.prototype.findUserByName = function(name) {
+	var user = this.users.findObject({
+		name: { '$eq': name }
+	});
+	return user;
+};
+
+module.exports = Users;

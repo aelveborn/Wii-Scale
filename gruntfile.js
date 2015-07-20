@@ -5,21 +5,25 @@ module.exports = function (grunt) {
     	path: {
 			root: 			'web/',
 			src: {
-				root: 		'web/source/',
-				less: 		'web/source/less/',
-				styles: 	'web/source/styles/',
-				scripts: 	'web/source/scripts/',
-				images: 	'web/source/images/',
-				views: 		'web/source/views/'
+				root: 		'web/public/source/',
+				less: 		'web/public/source/less/',
+				styles: 	'web/public/source/styles/',
+				scripts: 	'web/public/source/scripts/',
+				images: 	'web/public/source/images/',
+				views: 		'web/public/source/views/'
 			},
 			dist: {
-				root: 		'web/build/',
-				styles: 	'web/build/styles/',
-				scripts: 	'web/build/scripts/',
-				images: 	'web/build/images/',
-				views: 		'web/build/views/'
+				root: 		'web/public/build/',
+				styles: 	'web/public/build/styles/',
+				scripts: 	'web/public/build/scripts/',
+				images: 	'web/public/build/images/',
+				views: 		'web/public/build/views/'
 			},
-			vendor: 		'node_modules/'
+			server: {
+				root: 		'web/server/'
+			},
+			vendor: 		'node_modules/',
+			test: 			'test/'
 		},
 
 		pkg: grunt.file.readJSON('package.json'),
@@ -29,8 +33,12 @@ module.exports = function (grunt) {
 				files: {
 				    '<%= path.dist.scripts %>scripts.js': [
 				    	'<%= path.vendor %>jquery/dist/jquery.js',
-				    	'<%= path.vendor %>bootstrap/js/tooltip.js',
-						'<%= path.vendor %>bootstrap/js/popover.js',
+				    	'<%= path.vendor %>bootstrap/js/dropdown.js',
+				    	'<%= path.vendor %>bootstrap/js/modal.js',
+				    	'<%= path.vendor %>angular/angular.js',
+				    	'<%= path.vendor %>angular-socket-io/socket.js',
+				    	'<%= path.vendor %>angular-route/angular-route.js',
+				    	'<%= path.vendor %>angular-animate/angular-animate.js',
 				    	'<%= path.src.scripts %>**/*.js'
 				    	]
 				}
@@ -46,7 +54,7 @@ module.exports = function (grunt) {
 		less: {
 			build: {
 				files: {
-					'<%= path.dist.styles %>site.css': [ '<%= path.src.less %>sources.less']
+					'<%= path.dist.styles %>site.css': [ '<%= path.src.less %>build.less']
 				}
 			}
 		},
@@ -61,7 +69,13 @@ module.exports = function (grunt) {
 
 		jshint: {
 			build: {
-				src: ['<%= path.src.scripts %>*.js']
+				src: ['<%= path.src.scripts %>**/*.js', 'gruntfile.js']
+			},
+			server: {
+				src: ['<%= path.server.root %>**/*.js', '<%= path.root %>*.js']
+			},
+			test: {
+				src: ['<%= path.test %>**/*.js']
 			}
 		},
 
@@ -89,24 +103,43 @@ module.exports = function (grunt) {
 				cwd: '<%= path.src.root %>',
 				src: ['**', '!**/less/**', '!**/images/**', '!**/scripts/**'],
 				dest: '<%= path.dist.root %>'
+			},
+			fontawesome: {
+				expand: true,
+				cwd: '<%= path.vendor %>/font-awesome/fonts/',
+				src: '**',
+				dest: '<%= path.dist.root %>/fonts/'
+			}
+		},
+
+		simplemocha: {
+			all: { 
+				src: '<%= path.test %>**/*.js'
 			}
 		},
 
 		watch: {
 			js: {
 				files: ['<%= path.src.scripts %>**/*.js'],
-				tasks: ['jshint', 'concat']
+				tasks: ['jshint:build', 'concat', 'uglify']
+			},
+			js_server: {
+				files: ['<%= path.server.root %>**/*.js', '<%= path.root %>*.js'],
+				tasks: ['jshint:server', 'simplemocha']
+			},
+			test: {
+				files: ['<%= path.test %>**/*.js'],
+				tasks: ['jshint:test', 'simplemocha']
 			},
 			less: {
 				files: ['<%= path.src.less %>**/*.less'],
-				tasks: ['less'] 
+				tasks: ['less', 'cssmin'] 
 			},
 			image: {
 				files: ['<%= path.src.images %>**/*.{png,jpg,gif}'],
 				tasks: ['imagemin']
 			}
 		}
-
 
 	});
 
@@ -119,9 +152,10 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-less');
 	grunt.loadNpmTasks('grunt-contrib-concat');
+	grunt.loadNpmTasks('grunt-simple-mocha');
 
-	grunt.registerTask('default', ['less', 'jshint', 'concat', 'imagemin', 'copy']);
-	grunt.registerTask('clean-build', ['clean', 'less', 'jshint', 'concat', 'imagemin', 'copy']);
-	grunt.registerTask('release', ['clean', 'less', 'cssmin', 'jshint', 'concat', 'uglify', 'imagemin', 'copy']);
+	grunt.registerTask('default', ['build', 'watch']);
+	grunt.registerTask('build', ['less', 'cssmin', 'jshint:build', 'jshint:test', 'simplemocha', 'concat', 'uglify', 'imagemin', 'copy']);
+	grunt.registerTask('clean-build', ['clean', 'build']);
 
 };

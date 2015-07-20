@@ -71,27 +71,32 @@ class WebSocketIO:
 		global host
 		global port
 		self.socketIO = SocketIO(host, port, LoggingNamespace)
-		self.socketIO.on('sleep', self.receive_sleep)
-		self.socketIO.on('disconnect', self.receive_disconnect)
+		self.socketIO.on('wiiscale-connect', self.receive_connect)
+		self.socketIO.on('wiiscale-disconnect', self.receive_disconnect)
 
 	def wait(self):
 		self.socketIO.wait(seconds = 1)
 
 	def send_status(self, status):
-		self.socketIO.emit('status', {'status': status})
+		self.socketIO.emit('wiiscale-status', {'status': status})
 
 	def send_weight(self, totalWeight):
-		self.socketIO.emit('weight', {'totalWeight': totalWeight})
+		self.socketIO.emit('wiiscale-weight', {'totalWeight': totalWeight})
+
+#	def send_connection_status(self, status):
+#		self.socketIO.emit('wiiscale-connection', {'status': status})
 
 	# Accepts True or False as argument
-	def receive_sleep(self, *args):
+	def receive_connect(self):
 		global sleep
-		if isinstance(args[0], bool):
-			sleep = args[0]
+		sleep = False
 
-	def receive_disconnect(self, *args): #TODO: NEW
+	def receive_disconnect(self):
 		global board
+		global sleep
+		sleep = True
 		board.disconnect()
+
 
 def options(argv):
 	try:
@@ -133,6 +138,9 @@ def main(argv):
 	global calibrate
 	global board
 
+	ready = False
+	sleep = True
+	connected = False
 	calculate = CalculateWeight()
 	socket = WebSocketIO()
 	board = wiiboard.Wiiboard()
@@ -140,9 +148,22 @@ def main(argv):
 	# Scale	
 	while(True):
 
+		# Check if connection status changed
+		if connected is not board.isConnected():
+			connected = board.isConnected()
+			if connected:
+				socket.send_status("CONNECTED")
+			else:				
+				socket.send_status("DISCONNECTED")
+				#Turn off lights
+				time.sleep(0.1) # This is needed for wiiboard.py
+				board.setLight(False)
+
+		# Waiting for disconnect/sleep command
+		socket.wait()
 		if sleep:
-			socket.wait()
 			continue
+
 
 		# Reset
 		done = False
@@ -162,22 +183,34 @@ def main(argv):
 				address = board.discover()
 			else:
 				address = config_address
+
+			if not address:
+				sleep = True
+				socket.send_status("NO DEVICE FOUND")
+				continue
+
+			socket.send_status("CONNECTING")
 			board.connect(address)
 
+			if board.isConnected():
+				connected = True
+				socket.send_status("CONNECTED")
 
-		#Measure
-		if address:
-			#Flash lights
-			time.sleep(0.1)
-			board.setLight(True)
+
+		#Board is connected and ready
+		if board.isConnected():
+
+			# Post ready status once
+			if not ready:
+				ready = True
+				time.sleep(0.1) # This is needed for wiiboard.py
+				board.setLight(True)
+				socket.send_status("READY")
 
 			#Measure weight
-			socket.send_status("READY")			
-
-			while(not done):
-				time.sleep(0.1)
-
-				if board.mass.totalWeight > sensitivity:
+			if board.mass.totalWeight > sensitivity:
+				while(not done):
+					time.sleep(0.1)
 
 					if firstStep:
 						firstStep = False
@@ -189,12 +222,10 @@ def main(argv):
 						total.append(board.mass.totalWeight)
 						socket.send_weight(calculate.weight(total))
 
-				if board.mass.totalWeight <= sensitivity and not firstStep:
-					done = True
-
-		# Done
-		sleep = True
-		socket.send_status("SLEEP")
+					if board.mass.totalWeight <= sensitivity and not firstStep:
+						done = True
+						socket.send_status("DONE")
+				ready = False
 
 if __name__ == "__main__":
 	main(sys.argv[1:])

@@ -29,25 +29,20 @@
 	SOFTWARE.
 */
 
-var app = require('express')();
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
-var socket = require('./server/routes/socket.js')(io);
-var routes = require('./server/routes/index.js');
+var options = {
+	root: __dirname + '/../../public/views/'
+};
 
-var host = process.env.npm_package_config_host;
-var port = process.env.npm_package_config_port;
+exports.index = function(req, res) {
+	res.sendFile('index.html', options);
+};
 
-app.use('/static', require('express').static('web/public/build'));
+exports.directives = function(req, res) {
+	var page = req.params.page;
+	res.sendFile('directives/' + page + '.html', options);
+};
 
-// Routes
-app.get('/', routes.index);
-app.get('/directives/:page', routes.directives);
-app.get('/partials/:page', routes.partials);
-
-
-exports.start = function() {
-	server.listen(port, host, function(){
-		console.log('Listening on ' + host + ':' + port);
-	});
+exports.partials = function (req, res) {
+	var page = req.params.page;
+	res.sendFile('partials/' + page + '.html', options);
 };

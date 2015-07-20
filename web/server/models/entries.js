@@ -29,25 +29,35 @@
 	SOFTWARE.
 */
 
-var app = require('express')();
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
-var socket = require('./server/routes/socket.js')(io);
-var routes = require('./server/routes/index.js');
+var loki = require('lokijs'),
+	db = new loki('app-data.json');
 
-var host = process.env.npm_package_config_host;
-var port = process.env.npm_package_config_port;
+var Entries = function(collection) {
+	this.entries = collection;
+};
 
-app.use('/static', require('express').static('web/public/build'));
+Entries.prototype.add = function(entry) {
+	this.entries.insert(entry);
+};
 
-// Routes
-app.get('/', routes.index);
-app.get('/directives/:page', routes.directives);
-app.get('/partials/:page', routes.partials);
+Entries.prototype.get = function() {
+	return this.entries.data;
+};
 
+Entries.prototype.remove = function(entry) {
+	this.entries.remove(entry);
+};
 
-exports.start = function() {
-	server.listen(port, host, function(){
-		console.log('Listening on ' + host + ':' + port);
+Entries.prototype.getUserEntries = function(user) {
+	return this.entries.find({
+		userName: { '$eq': user.name }
 	});
 };
+
+Entries.prototype.removeUserEntries = function(user) {
+	this.entries.removeWhere({
+		userName: { '$eq': user.name }
+	});
+};
+
+module.exports = Entries;

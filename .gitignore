@@ -2,6 +2,9 @@
 # Node
 #########################
 
+# Storage
+app-data.json
+
 # Logs
 web/logs
 web/*.log
@@ -88,3 +91,11 @@ docs/_build/
 # PyBuilder
 target/
 *.pyc
+
+
+#########################
+# Custom
+#########################
+
+# Exclude web build files
+!web/public/build/
