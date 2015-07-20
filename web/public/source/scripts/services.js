@@ -40,6 +40,8 @@
 
         factory('socketCommands', function(){
             var commands = Object.freeze({
+                CLIENT_LOAD:            'client load',
+
                 DEVICE_CONNECT:         'device connect',
                 DEVICE_DISCONNECT:      'device disconnect',
 
@@ -57,6 +59,18 @@
             });
             return commands;
         }).
+
+        factory('client', ['socket', 'socketCommands', function (socket, socketCommands){
+            var client = {
+                load: load,
+            };
+
+            return client;
+
+            function load() {
+                socket.emit(socketCommands.CLIENT_LOAD);
+            }
+        }]).
 
         factory('device', ['socket', 'socketCommands', function (socket, socketCommands){
             var device = {

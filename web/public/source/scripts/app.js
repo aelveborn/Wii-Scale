@@ -41,13 +41,14 @@
         'app.services'
     ]).
 
-    run(['$rootScope', 'entries', function ($rootScope, entries) {
+    run(['$rootScope', 'entries', 'client', function ($rootScope, entries, client) {
         var defaultUser = {
             name: "Guest"
         };
         $rootScope.defaultUser = defaultUser;
         $rootScope.selectedUser = defaultUser;
         entries.getUserEntries(defaultUser);
+        client.load();
     }]).
 
     config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {

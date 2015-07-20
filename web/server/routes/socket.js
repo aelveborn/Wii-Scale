@@ -39,21 +39,24 @@ var users = null;
 var entries = null;
 var NO_PREVIOUS_STATUS = "NO PREVIOUS STATUS";
 
+
+// Database
+
 var loki = require('lokijs'),
 	db = new loki('app-data.json', {
 		autoload: true,
 		autoloadCallback: loadHandler
 	});
 
-function loadHandler () {
-	// Users
+function loadUsers () {
 	var userColl = db.getCollection('users');
 	if(userColl === null) {
 		userColl = db.addCollection('users');
 	}
 	users = new Users(userColl);
+}
 
-	// Entries
+function loadEntries () {
 	var entriesColl = db.getCollection('entries');
 	if(entriesColl === null) {
 		entriesColl = db.addCollection('entries');
@@ -61,31 +64,57 @@ function loadHandler () {
 	entries = new Entries(entriesColl);
 }
 
+function loadHandler () {
+	// Users
+	loadUsers();
+
+	// Entries
+	loadEntries();
+}
+
 
 module.exports = function(io) {
+
+	var cmd = Object.freeze({
+		SOCKET_CONNECT: 			'connect',
+		SOCKET_DISCONNECT: 			'disconnect',
+
+        DEVICE_RCV_CONNECT:         'device connect',
+        DEVICE_RCV_DISCONNECT:      'device disconnect',
+
+        CLIENT_RCV_LOAD:  			'client load',
+
+        USERS_RCV_ADD:              'users add',
+        USERS_RCV_REMOVE:           'users remove',
+        USERS_SEND_LIST:     		'users list',
+
+        ENTRIES_RCV_ADD:            'entries add',
+        ENTRIES_RCV_REMOVE:         'entries delete',
+        ENTRIES_RCV_USER:           'entries user',
+        ENTRIES_SEND_LIST:   		'entries list',
+
+        WIISCALE_WEIGHT:        	'wiiscale-weight',
+        WIISCALE_STATUS:        	'wiiscale-status',
+        WIISCALE_SEND_CONNECT: 		'wiiscale-connect',
+        WIISCALE_SEND_DISCONNECT: 	'wiiscale-disconnect',
+    });
 
 	var connectedUsers = -1; // Start at negative one since wii-scale becomes a user
 	var lastCommand = { status: NO_PREVIOUS_STATUS };
 
-	io.on('connection', function(socket) {
+	io.on(cmd.SOCKET_CONNECT, function(socket) {
 
 		// Server
 		// -----------------------------------
 
 		connectedUsers++;
-
-		// Send all saved entries to the user
-		socket.emit('users list', users.get());
-
-		// Send current status to new users
-		socket.emit('wiiscale-status', lastCommand);
 		
 		// Disconnect wii-scale if no users is on the site
-		socket.on('disconnect', function() {
+		socket.on(cmd.SOCKET_DISCONNECT, function() {
 			connectedUsers--;
 			if(connectedUsers === 0) {
 				lastCommand.status = NO_PREVIOUS_STATUS;
-				io.emit('wiiscale-disconnect');
+				io.emit(cmd.WIISCALE_SEND_DISCONNECT);
 			}
 		});
 
@@ -93,52 +122,74 @@ module.exports = function(io) {
 		// From Client
 		// -----------------------------------
 
-		socket.on('device connect', function() {
-			io.emit('wiiscale-connect');
+		// Send initial data to client
+		socket.on(cmd.CLIENT_RCV_LOAD, function () {
+			// Send all saved entries to the user
+			socket.emit(cmd.USERS_SEND_LIST, users.get());
+
+			// Send current status to new users
+			socket.emit(cmd.WIISCALE_STATUS, lastCommand);
 		});
 
-		socket.on('device disconnect', function() {
-			io.emit('wiiscale-disconnect');
+		// Connecto to hardware
+		socket.on(cmd.DEVICE_RCV_CONNECT, function() {
+			io.emit(cmd.WIISCALE_SEND_CONNECT);
 		});
 
-		socket.on('entries add', function(params) {
+		// Disconnect device harware
+		socket.on(cmd.DEVICE_RCV_DISCONNECT, function() {
+			io.emit(cmd.WIISCALE_SEND_DISCONNECT);
+		});
+
+		// Save a new entry for user
+		// params.userName 	string
+		// params.weight 	int
+		socket.on(cmd.ENTRIES_RCV_ADD, function(params) {
 			var item = new Entry(params.userName, params.weight);
 			entries.add(item);
 			db.saveDatabase();
 
 			var user = new User(params.userName);
-			socket.emit('entries list', entries.getUserEntries(user));
+			socket.emit(cmd.ENTRIES_SEND_LIST, entries.getUserEntries(user));
 		});
 
-		socket.on('entries delete', function(entry) {
+		// Remove entry
+		// entry 			entry
+		socket.on(cmd.ENTRIES_RCV_REMOVE, function(entry) {
 			entries.remove(entry);
 			db.saveDatabase();
 
 			var user = new User(entry.userName);
-			socket.emit('entries list', entries.getUserEntries(user));
+			socket.emit(cmd.ENTRIES_SEND_LIST, entries.getUserEntries(user));
 		});
 
-		socket.on('entries user', function(params) {
+		// Requests all entries for the user
+		// params.name 		string
+		socket.on(cmd.ENTRIES_RCV_USER, function(params) {
 			var user = new User(params.name);
-			socket.emit('entries list', entries.getUserEntries(user));
+			socket.emit(cmd.ENTRIES_SEND_LIST, entries.getUserEntries(user));
 		});
 
-		socket.on('users add', function(params) {
+		// Save new user
+		// params.name 		string
+		socket.on(cmd.USERS_RCV_ADD, function(params) {
 			if(users.findUserByName(params.name) === null) {
 				users.add(new User(params.name));
 				db.saveDatabase();
-				socket.emit('users list', users.get());
+				socket.emit(cmd.USERS_SEND_LIST, users.get());
 			} else {
 				// TODO: "User already exist"
 			}
 		});
 
-		socket.on('users remove', function(params) {
+		// Remove user
+		// params.name 		string
+		socket.on(cmd.USERS_RCV_REMOVE, function(params) {
 			var user = users.findUserByName(params.name);
 			if(user !== null) {
 				users.remove(user);
 				db.saveDatabase();
-				socket.emit('users list', users.get());
+				socket.emit(cmd.USERS_SEND_LIST, users.get());
 			} else {
 				// TODO: "Could not find user"
 			}			
@@ -150,15 +201,15 @@ module.exports = function(io) {
 
 		// Status from wii-scale
 		// data.status 			string
-		socket.on('wiiscale-status', function(data){
-			io.emit('wiiscale-status', data);
+		socket.on(cmd.WIISCALE_STATUS, function(data){
+			io.emit(cmd.WIISCALE_STATUS, data);
 			latestStatus = data;
 		});
 
 		// Measured weight from wii-scale
 		// data.totalWeight 	int
-		socket.on('wiiscale-weight', function(data){
-			io.emit('wiiscale-weight', data);
+		socket.on(cmd.WIISCALE_WEIGHT, function(data){
+			io.emit(cmd.WIISCALE_WEIGHT, data);
 		});
 	});
 
