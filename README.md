@@ -83,7 +83,7 @@ If you are a developer you can install Wii-Scale with all developer dependecies:
 	sudo python setup.py install
 	sudo npm install
 
-If you are a developer and whant to contribute to the development, this is some nice commands to know about.
+If you are a developer and whant to contribute to the project, then this is some nice commands to know about.
 
 Run:
 
@@ -99,7 +99,7 @@ Grunt commands:
 	grunt build
 	grunt clean-build
 
-`grunt` will run grunt watch and build the whole project.
+`grunt` will run `grunt watch` and build the whole project.
 
 ## Libraries
 
