@@ -28,6 +28,14 @@ To communicate with your Wii Balance Board you'll need a bluetooth 2.0 or 2.1 co
 
 ### Install Wii-Scale
 
+Download latest version of Wii-Scale:
+
+	cd <your-directory>/
+	git clone https://github.com/aelveborn/Wii-Scale.git --depth 1
+	cd Wii-Scale/
+
+Run install:
+
 	sudo python setup.py install
 	sudo npm install --production
 
@@ -72,6 +80,19 @@ If you have paired your Wii balance board with your computer or Raspberry Pi you
 If the scales weight is off by any amout you can calibrate it by your own by setting the calibration i Kg. So `npm config set wii-scale:calibrate 2`will add 2kg to your weight, default is set to 0.
 
 	npm config set wii-scale:calibrate 0
+
+
+## Update
+
+To update Wii-Scale, grab the latest version from github:
+
+	cd <your-directory>/Wii-Scale
+	git pull origin master
+
+Update Wii-Scale by running install:
+
+	sudo python setup.py install
+	sudo npm install --production
 
 
 ## For developers
