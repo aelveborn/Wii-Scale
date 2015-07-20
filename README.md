@@ -4,7 +4,7 @@ Wii-Scale turns your Wii Balance Board into a digital scale. Wii-Scale will auto
 
 You can also create multiple users for the whole family and see each members weight history. Wii-Scale runs on Linux and it also runs on a Raspberry Pi.
 
-![Wii-Scale](https://github.com/aelveborn/Wii-Scale/blob/gh-pages/images/wiiscale_measuring.png?raw=true) 
+![Wii-Scale](https://github.com/aelveborn/Wii-Scale/blob/gh-pages/images/wiiscale_0_0_4_start.png?raw=true) 
 
 Wii-Scale is based on python, node.js, AngularJS and communicates over the lightning fast WebSocket protocol.
 
@@ -12,7 +12,7 @@ Wii-Scale is based on python, node.js, AngularJS and communicates over the light
 
 To connect to your Wii Balance Board you'll only need to press the green "Connect" button on the website and press the red sync button on your Wii Balance Board. The red sync button is located under the battery hatch. Wii-Scale will stay on an listen for your Wii Balance Board and promt you what to do in the web interface.
 
-![Wii-Scale scanning for Wii Balance Board](https://github.com/aelveborn/Wii-Scale/blob/gh-pages/images/wiiscale_search.png?raw=true) 
+![Wii-Scale scanning for Wii Balance Board](https://github.com/aelveborn/Wii-Scale/blob/gh-pages/images/wiiscale_0_0_4_measuring.png?raw=true) 
 
 The weight is calculated by taking the mean of 50 readings. Wii-Scale will ignore all weights under 30 kg to give you the most accurate reading possible. Oh, and all this will take about 3 seconds.
 
