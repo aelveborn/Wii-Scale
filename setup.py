@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
 	name = "WiiScale",
-	version = "0.0.3",
+	version = "0.0.4",
 	description = "Wii-Scale",
 	license = "MIT",
 	author = "Andreas Älveborn",
