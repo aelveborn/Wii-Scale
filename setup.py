@@ -12,7 +12,7 @@ setup(
 	url = "https://github.com/aelveborn/Wii-Scale",
 	packages = ["wii-scale"],
 	install_requires = [
-		'pybluez==0.18',
+		'pybluez>=0.18',
 		'socketio-client==0.6.1'
 	]
 )
