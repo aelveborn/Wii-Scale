@@ -1,5 +1,5 @@
 module.exports = function (grunt) {
-    
+
     grunt.initConfig({
 
     	path: {
@@ -32,6 +32,7 @@ module.exports = function (grunt) {
 			build: {
 				files: {
 				    '<%= path.dist.scripts %>scripts.js': [
+                        '<%= path.vendor %>d3/d3.js',
 				    	'<%= path.vendor %>jquery/dist/jquery.js',
 				    	'<%= path.vendor %>bootstrap/js/dropdown.js',
 				    	'<%= path.vendor %>bootstrap/js/modal.js',
@@ -113,7 +114,7 @@ module.exports = function (grunt) {
 		},
 
 		simplemocha: {
-			all: { 
+			all: {
 				src: '<%= path.test %>**/*.js'
 			}
 		},
@@ -133,7 +134,7 @@ module.exports = function (grunt) {
 			},
 			less: {
 				files: ['<%= path.src.less %>**/*.less'],
-				tasks: ['less', 'cssmin'] 
+				tasks: ['less', 'cssmin']
 			},
 			image: {
 				files: ['<%= path.src.images %>**/*.{png,jpg,gif}'],
@@ -147,7 +148,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-imagemin');
-	grunt.loadNpmTasks('grunt-contrib-cssmin');	
+	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-less');
