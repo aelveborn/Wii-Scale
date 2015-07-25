@@ -5,21 +5,21 @@
     This file is part of Wii-Scale
 
     ----------------------------------------------------------------------------
-    
+
     The MIT License (MIT)
-    
+
     Copyright (c) 2015 Andreas Älveborn
-    
+
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
     in the Software without restriction, including without limitation the rights
     to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
     copies of the Software, and to permit persons to whom the Software is
     furnished to do so, subject to the following conditions:
-    
+
     The above copyright notice and this permission notice shall be included in all
     copies or substantial portions of the Software.
-    
+
     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
     FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -36,7 +36,7 @@
 	            <a class="navbar-brand" href="/">
 	                Wii-Scale
 	            </a>
-	        </div>	        
+	        </div>
 
 	        <ul class="nav navbar-nav navbar-right nav-controls">
 	            <li>
@@ -54,7 +54,7 @@
 	        </ul>
 
 			<div ng-controller="UserController">
-				
+
 				<delete-user-modal user="users.removeUser"></delete-user-modal>
 
 		        <ul class="nav navbar-nav navbar-right nav-users">
@@ -74,7 +74,7 @@
 								</a>
 							</li>
 
-							<li ng-repeat="user in users.list track by $index">							
+							<li ng-repeat="user in users.list track by $index">
 								<a href="#">
 									<i class="fa fa-trash-o" ng-click="users.remove(user)"
 										data-toggle="modal" data-target="#deleteUserModal"></i>
@@ -98,7 +98,7 @@
 	    </div>
 	</nav>
 
-	<div class="container-fluid">        
+	<div class="container-fluid">
 
 	    <div class="row">
 	        <div class="col-xs-12 status-bar">
@@ -143,7 +143,7 @@
 	                    Disconnecting
 	                </p>
 	            </status>
-	            
+
 	            <status type="warning" ng-show="status.warning">
 	                <i class="fa fa-exclamation-triangle"></i>
 	                <p>
@@ -165,6 +165,13 @@
 	                <span class="value" id="weight-total">{{ measuring.weight | number:1 }}</span>
 	                <span class="unit">kg</span>
 	            </div>
+				<div class="row">
+
+					<div class="col-xs-12">
+						<graph entries="entries" class="svg-container"></graph>
+					</div>
+
+				</div>
 	        </div>
 
 	        <div class="col-xs-12 col-md-4 col-md-offset-1">
@@ -176,6 +183,7 @@
 	        </div>
 
 	    </div>
+
 	</div>
 
 </div>
