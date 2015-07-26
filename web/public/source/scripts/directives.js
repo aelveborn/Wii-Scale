@@ -229,6 +229,18 @@
 							showArea: false,
 							showPoint: true,
 							fullWidth: true,
+							axisX: {
+								showGrid: false
+							},
+							axisY: {
+								showLabel: false,
+								showGrid: false
+							},
+							plugins: [
+								Chartist.plugins.ctPointLabels({
+									textAnchor: 'middle'
+								})
+							]
 						});
 
 						chart.on('draw', function(data) {
