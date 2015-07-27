@@ -308,8 +308,10 @@
 						if(newValue === undefined) {
 							return;
 						}
-						
-						drawChart(loadData());
+
+						if($scope.entries.list.length > 1) {
+							drawChart(loadData());
+						}
 					});
 
 				}
