@@ -202,14 +202,56 @@
 				link: function($scope, iElm, iAttrs, controller) {
 
 					function formatDate(date) {
-						var result = "";
-
-						result = $filter('date')(date, 'dd/MM');
-
-						return result;
+						return $filter('date')(date, 'dd/MM');
 					}
 
-					function loadData() {
+					var options = {
+						showPoint: true,
+						fullWidth: true,
+						chartPadding: {
+							bottom: 50,
+							right: 40,
+							left: 0
+						},
+						height: 180,
+						axisX: {
+							showLabel: true,
+							labelOffset: {
+								x: -16,
+								y: 20
+							},
+							showGrid: false
+						},
+						axisY: {
+							showLabel: false,
+							showGrid: false,
+						},
+							plugins: [
+								Chartist.plugins.ctPointLabels({
+									textAnchor: 'middle',
+									labelInterpolationFnc: function(value) {
+										return value + ' kg';
+									}
+								}),
+							]
+						
+					};
+
+					var responsiveOptions = [
+						['screen and (max-width: 767px)', {
+							axisX: {
+								showLabel: false
+							},
+						}],
+						['screen and (min-width: 768px)', {
+							axisX: {
+								showLabel: true
+							},
+						}],
+					];
+
+
+					var loadData = function() {
 						var set = 0;
 						var data = {
 							labels: [],
@@ -226,36 +268,12 @@
 						}
 
 						return data;						
-					}
+					};
 
 					function drawChart(data) {
 
 						// Chart
-						var chart = new Chartist.Line('.ct-chart', data, {
-							showArea: false,
-							showPoint: true,
-							fullWidth: true,
-							height: 180,
-							axisX: {
-								showLabel: true,
-								labelOffset: {
-									x: -14,
-								},
-								showGrid: false
-							},
-							axisY: {
-								showLabel: false,
-								showGrid: false,
-							},
-							plugins: [
-								Chartist.plugins.ctPointLabels({
-									textAnchor: 'middle',
-									labelInterpolationFnc: function(value) {
-										return value + ' kg';
-									}
-								}),
-							]
-						});
+						var chart = new Chartist.Line('.ct-chart', data, options, responsiveOptions);
 
 						// Animation
 						chart.on('draw', function(data) {
@@ -270,42 +288,8 @@
 									}
 								});
 							}
-/*
-							if(data.type === 'label' && data.axis === 'x') {
-								// We just offset the label X position to be in the middle between the current and next axis grid
-								data.element.attr({
-									dx: data.x -60;
-								});
-							}*/
 						});
 
-						// Tooltip
-						var element =  angular.element(chart.container);
-						var $toolTip = element
-							.append('<div class="tooltip"></div>')
-							.find('.tooltip')
-							.hide();
-
-						element.on('mouseenter', '.ct-point', function() {
-							var $point = $(this);
-							var value = $point.attr('ct:value');
-							var labelIndex = element.find('g').find('line').index($point);
-							var label = data.labels[labelIndex];
-							
-							$toolTip.html(label + '<br />' + value).show();
-						});
-
-						element.on('mouseleave', '.ct-point', function() {
-							$toolTip.hide();
-						});
-/*
-						element.on('mousemove', function(event) {
-							$toolTip.css({
-								left: (event.offsetX || event.originalEvent.layerX) - $toolTip.width() / 2 - 10,
-								top: (event.offsetY || event.originalEvent.layerY) - $toolTip.height() - 40
-							});
-						});
-*/
 					}					
 
 					$scope.$watch('entries.list.length', function(newValue, oldValue) {
