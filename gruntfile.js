@@ -21,10 +21,10 @@
 */
 
 module.exports = function (grunt) {
-    
-    grunt.initConfig({
+	
+	grunt.initConfig({
 
-    	path: {
+		path: {
 			root: 			'web/',
 			src: {
 				root: 		'web/public/source/',
@@ -53,23 +53,25 @@ module.exports = function (grunt) {
 		concat: {
 			build: {
 				files: {
-				    '<%= path.dist.scripts %>scripts.js': [
-				    	'<%= path.vendor %>jquery/dist/jquery.js',
-				    	'<%= path.vendor %>bootstrap/js/dropdown.js',
-				    	'<%= path.vendor %>bootstrap/js/modal.js',
-				    	'<%= path.vendor %>angular/angular.js',
-				    	'<%= path.vendor %>angular-socket-io/socket.js',
-				    	'<%= path.vendor %>angular-route/angular-route.js',
-				    	'<%= path.vendor %>angular-animate/angular-animate.js',
-				    	'<%= path.src.scripts %>**/*.js'
-				    	]
+					'<%= path.dist.scripts %>scripts.js': [
+						'<%= path.vendor %>jquery/dist/jquery.js',
+						'<%= path.vendor %>bootstrap/js/dropdown.js',
+						'<%= path.vendor %>bootstrap/js/modal.js',
+						'<%= path.vendor %>angular/angular.js',
+						'<%= path.vendor %>angular-socket-io/socket.js',
+						'<%= path.vendor %>angular-route/angular-route.js',
+						'<%= path.vendor %>angular-animate/angular-animate.js',
+						'<%= path.vendor %>chartist/dist/chartist.js',
+						'<%= path.vendor %>chartist-plugin-pointlabels/dist/chartist-plugin-pointlabels.js',
+						'<%= path.src.scripts %>**/*.js'
+						]
 				}
 			}
 		},
 
 		clean: {
 			build: {
-			    src: ['<%= path.dist.root %>']
+				src: ['<%= path.dist.root %>']
 			}
 		},
 

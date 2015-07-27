@@ -47,6 +47,8 @@
     "grunt-contrib-watch": "^0.6.1",
     "grunt-simple-mocha": "^0.4.0",
     "jquery": "1.11.3",
-    "mocha": "^2.2.5"
+    "mocha": "^2.2.5",
+    "chartist": "~0.9.1",
+    "chartist-plugin-pointlabels": "0.0.4"
   }
 }
