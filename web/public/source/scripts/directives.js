@@ -183,7 +183,7 @@
 			};
 		}]).
 
-		directive('lineChart', ['$filter', function ($filter){
+		directive('lineChart', ['$filter', '$rootScope', function ($filter, $rootScope){
 			return {
 				scope: {
 					entries: '='
@@ -273,7 +273,7 @@
 						});
 
 						// Tooltip
-						var element =  angular.element(chart.container);
+						var element = angular.element(chart.container);
 						var $toolTip = element
 							.append('<div class="tooltip"></div>')
 							.find('.tooltip')
@@ -293,16 +293,37 @@
 						element.on('mouseleave', '.ct-point', function() {
 							$toolTip.hide();
 						});
-					}					
+					}
+
+					function removeGraph() {
+						var chart = angular.element('.ct-chart');
+						if(chart !== undefined) {
+							chart.children().remove();
+						}
+					}
+
+					function updateGraph() {
+						if($scope.entries.list.length > 1) {
+							drawChart(loadData());
+						} else {
+							removeGraph();
+						}
+					}
 
 					$scope.$watch('entries.list.length', function(newValue, oldValue) {
 						if(newValue === undefined) {
 							return;
 						}
 
-						if($scope.entries.list.length > 1) {
-							drawChart(loadData());
+						updateGraph();
+					});
+
+					$scope.$watch('$rootScope.selectedUser', function(newValue, oldValue) {
+						if(newValue === oldValue) {
+							return;
 						}
+
+						updateGraph();
 					});
 
 				}
