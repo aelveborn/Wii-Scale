@@ -129,4 +129,4 @@ Wii-Scale uses the [wiiboard-simple](https://code.google.com/p/wiiboard-simple/)
 
 ## Lincense
 
-Wii-Scale is created and copyrighted by [Andreas Älveborn](http://aelveborn.com) and lincensed under MIT. [wiiboard-simple](https://code.google.com/p/wiiboard-simple/) is licensed under LGPL.
+Wii-Scale is created and copyrighted by [Andreas Älveborn](http://aelveborn.com) and lincensed under GPL v2. [wiiboard-simple](https://code.google.com/p/wiiboard-simple/) is licensed under LGPL.

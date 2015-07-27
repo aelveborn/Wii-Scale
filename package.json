@@ -4,7 +4,7 @@
   "description": "Wii-Scale",
   "author": "Andreas Älveborn",
   "url": "https://github.com/aelveborn/Wii-Scale",
-  "license": "MIT",
+  "license": "GPL V2",
   "private": true,
   "main": "web/server.js",
   "repository": {
