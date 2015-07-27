@@ -310,7 +310,7 @@
 						}
 					}
 
-					$scope.$watch('entries.list.length', function(newValue, oldValue) {
+					$scope.$watch('entries.list', function(newValue, oldValue) {
 						if(newValue === undefined) {
 							return;
 						}
