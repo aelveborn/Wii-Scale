@@ -419,9 +419,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Graph */
-.ct-chart {
+.chart-wrapper {
 	margin-top: 60px;
+}
 
+.ct-chart {
+	
 	.ct-chart-line {
 		padding-top: 20px;
 	}
@@ -440,14 +443,27 @@ h1, h2, h3, h4, h5, h6 {
 		padding-top: 15px;
 		border-top: solid 1px #ddd;
 		color: rgba(51, 51, 51, 1);
-
 	}
 
-	.ct-series-a .ct-line, .ct-series-a .ct-point  {
+	.ct-series-a .ct-line, .ct-series-a .ct-point {
 		stroke: @brand-success;
 	}
+
+	.ct-point {
+		cursor: pointer;
+		border: solid 10px transparent;
+
+		&:hover {
+			stroke: lighten(@brand-success, 10%);
+		}
+	}
+
 }
 
 .tooltip {
+	color: #fff;
+	padding: 3px 8px;
 	position: absolute;
+	background-color: rgba(0,0,0,0.5);
+	border-radius: 3px;
 }

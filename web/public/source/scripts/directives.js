@@ -225,16 +225,7 @@
 						axisY: {
 							showLabel: false,
 							showGrid: false,
-						},
-							plugins: [
-								Chartist.plugins.ctPointLabels({
-									textAnchor: 'middle',
-									labelInterpolationFnc: function(value) {
-										return value + ' kg';
-									}
-								}),
-							]
-						
+						},						
 					};
 
 					var responsiveOptions = [
@@ -290,13 +281,34 @@
 							}
 						});
 
+						// Tooltip
+						var element =  angular.element(chart.container);
+						var $toolTip = element
+							.append('<div class="tooltip"></div>')
+							.find('.tooltip')
+							.hide();
+
+						element.on('mouseenter', '.ct-point', function() {
+							var $point = $(this);
+							var value = $point.attr('ct:value');
+
+							$toolTip.html(value + ' kg').show();
+							$toolTip.css({
+								left: $point.offset().left - (($toolTip.width() / 2) + 8),
+								top: $point.offset().top - 40
+							});							
+						});
+
+						element.on('mouseleave', '.ct-point', function() {
+							$toolTip.hide();
+						});
 					}					
 
 					$scope.$watch('entries.list.length', function(newValue, oldValue) {
 						if(newValue === undefined) {
 							return;
 						}
-
+						
 						drawChart(loadData());
 					});
 
