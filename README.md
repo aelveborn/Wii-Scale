@@ -129,6 +129,6 @@ Grunt commands:
 Wii-Scale uses the [wiiboard-simple](https://code.google.com/p/wiiboard-simple/) library and [xwiimote](https://github.com/dvdhrm/xwiimote)
 
 
-## Lincense
+## Licence
 
 Wii-Scale is created and copyrighted by [Andreas Älveborn](http://aelveborn.com) and lincensed under GPL v2. [wiiboard-simple](https://code.google.com/p/wiiboard-simple/) is licensed under LGPL.
