@@ -88,7 +88,6 @@ void connect()
         if((path = xwii_monitor_poll(monitor)) == NULL)
         {
             std::cerr << "Unable to find a balance board" << std::endl;
-            sleep(1);
             return;
         }
 
@@ -101,26 +100,24 @@ void connect()
             continue;
         }
 
-        if((xwii_iface_available(board) & XWII_IFACE_BALANCE_BOARD) == 0)
+        if((xwii_iface_available(board) & XWII_IFACE_BALANCE_BOARD))
         {
-            // Not a balance board
-            xwii_iface_unref(board);
-            board = NULL;
+            ret = xwii_iface_open(board, XWII_IFACE_BALANCE_BOARD);
 
-            continue;
-        }
+            if(ret)
+            {
+                std::cerr << "Cannot enable Balance Board: " << ret << std::endl;
 
-        ret = xwii_iface_open(board, XWII_IFACE_BALANCE_BOARD);
-
-        if(ret)
-        {
-            std::cerr << "Cannot enable Balance Board: " << ret << std::endl;
-
-            xwii_iface_unref(board);
-            board = NULL;
+                xwii_iface_unref(board);
+                board = NULL;
+            }
 
             return;
         }
+
+        // Not a balance board, try the next device
+        xwii_iface_unref(board);
+        board = NULL;
     }
 }
 
