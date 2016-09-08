@@ -27,10 +27,12 @@
 #include <xwiimote.h>
 #include <poll.h>
 
+#include "XWiiMonitor.h"
+
 namespace options = boost::program_options;
 
 sio::socket::ptr current_socket;
-struct xwii_iface *board = NULL;
+std::unique_ptr<XWiiIface> board;
 
 const int sensitivity = 3000; // as 10ths of a kg
 
@@ -71,54 +73,25 @@ void send_weight(std::vector<uint32_t> totals)
     current_socket->emit("wiiscale-weight", object);
 }
 
-void connect()
+std::unique_ptr<XWiiIface> connect()
 {
-    struct xwii_monitor* monitor = xwii_monitor_new(false, false);
+    XWiiMonitor monitor;
+    std::unique_ptr<XWiiIface> device;
 
-    if(monitor == NULL)
+    while(device = monitor.Poll())
     {
-        std::cerr << "Failed to create monitor" << std::endl;
-        return;
-    }
-
-    char *path;
-
-    for(;;)
-    {
-        if((path = xwii_monitor_poll(monitor)) == NULL)
+        if(!device->HasBalanceBoard())
         {
-            std::cerr << "Unable to find a balance board" << std::endl;
-            return;
-        }
-
-        int ret = xwii_iface_new(&board, path);
-        free(path);
-
-        if(ret)
-        {
-            std::cerr << "Failed to connect to " << path << " ret: " << ret << std::endl;
+            // Not a balance board, try the next device
             continue;
         }
 
-        if((xwii_iface_available(board) & XWII_IFACE_BALANCE_BOARD))
-        {
-            ret = xwii_iface_open(board, XWII_IFACE_BALANCE_BOARD);
-
-            if(ret)
-            {
-                std::cerr << "Cannot enable Balance Board: " << ret << std::endl;
-
-                xwii_iface_unref(board);
-                board = NULL;
-            }
-
-            return;
-        }
-
-        // Not a balance board, try the next device
-        xwii_iface_unref(board);
-        board = NULL;
+        device->EnableBalanceBoard();
+        return device;
     }
+
+    std::cerr << "Unable to find a balance board" << std::endl;
+    return nullptr;
 }
 
 int main(int argc, const char* argv[])
@@ -202,12 +175,12 @@ int main(int argc, const char* argv[])
         int skipReadings = 10;
 
         // Connect to balance board
-        if(board == NULL)
+        if(!board)
         {
             send_status("CONNECTING");
-            connect();
+            board = connect();
 
-            if(board == NULL)
+            if(!board)
             {
                 sleep = true;
             }
@@ -219,31 +192,20 @@ int main(int argc, const char* argv[])
         }
 
         // Board is connected and ready
-        if(board != NULL)
+        if(board)
         {
             // Post ready status once
             if(!ready)
             {
                 ready = true;
-                //board.setLight(true)
                 send_status("READY");
             }
 
             while(!done)
             {
                 struct xwii_event event;
-                int ret = xwii_iface_dispatch(board, &event, sizeof(event));
 
-                if(ret == -EAGAIN)
-                {
-                    continue;
-                }
-                else if(ret)
-                {
-                    std::cerr << "Error: Read failed with err: " << ret << std::endl;
-                    exit(1);
-                }
-                else if (event.type != XWII_EVENT_BALANCE_BOARD)
+                if(!board->Dispatch(XWII_EVENT_BALANCE_BOARD, &event))
                 {
                     continue;
                 }
