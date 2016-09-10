@@ -127,126 +127,100 @@ int main(int argc, const char* argv[])
     current_socket = client.socket();
 
     bool ready = false;
-    bool sleep = true;
-    bool connected = false;
+    bool connectMode = false;
+    bool firstStep;
+    int skipReadings;
+    std::vector<uint32_t> total;
 
     current_socket->on("wiiscale-connect", [&](sio::event& ev)
     {
         std::cout << "Requested connect" << std::endl;
-        sleep = false;
+        connectMode = true;
     });
 
     current_socket->on("wiiscale-disconnect", [&](sio::event& ev)
     {
         std::cout << "Requested disconnect" << std::endl;
-        // TODO: Disconnect
+        connectMode = false;
     });
 
     // Scale
     for(;;)
     {
-        // Check if connection status changed
-        if(connected != (board != NULL))
-        {
-            connected = (board != NULL);
-
-            if(connected)
-            {
-                send_status("CONNECTED");
-            }
-            else
-            {
-                send_status("DISCONNECTED");
-            }
-        }
-
-        // Waiting for disconnect/sleep command
-        usleep(100000);
-
-        if(sleep)
-        {
-            continue;
-        }
-
-        // Reset
-        int done = false;
-        std::vector<uint32_t> total;
-        bool firstStep = true;
-        int skipReadings = 10;
-
-        // Connect to balance board
-        if(!board)
+        // Connect or disconnect from board when requested
+        if(!board && connectMode)
         {
             send_status("CONNECTING");
             board = connect();
 
-            if(!board)
+            if(board)
             {
-                sleep = true;
-            }
-            else
-            {
-                connected = true;
                 send_status("CONNECTED");
             }
         }
-
-        // Board is connected and ready
-        if(board)
+        else if(board && !connectMode)
         {
-            // Post ready status once
-            if(!ready)
+            board = nullptr;
+            send_status("DISCONNECTED");
+        }
+
+        if(!board)
+        {
+            // Waiting for connection or command
+            usleep(100000);
+            continue;
+        }
+
+        // Post ready status once
+        if(!ready)
+        {
+            firstStep = true;
+            total.empty();
+            skipReadings = 10;
+
+            ready = true;
+            send_status("READY");
+        }
+
+        struct xwii_event event;
+
+        if(!board->Dispatch(XWII_EVENT_BALANCE_BOARD, &event))
+        {
+            continue;
+        }
+
+        // Measure weight
+        uint32_t totalWeight = 0;
+
+        for(int i = 0; i < 4; i++)
+        {
+            totalWeight += event.v.abs[i].x;
+        }
+
+        if(totalWeight <= sensitivity)
+        {
+            if(!firstStep)
             {
-                ready = true;
-                send_status("READY");
+                ready = false;
+                send_status("DONE");
             }
 
-            while(!done)
-            {
-                struct xwii_event event;
+            continue;
+        }
 
-                if(!board->Dispatch(XWII_EVENT_BALANCE_BOARD, &event))
-                {
-                    continue;
-                }
+        if(firstStep)
+        {
+            firstStep = false;
+            send_status("MEASURING");
+        }
 
-                // Measure weight
-                uint32_t totalWeight = 0;
+        // Skips the first readings when the user steps on the balance board
+        skipReadings -= 1;
 
-                for(int i = 0; i < 4; i++)
-                {
-                    totalWeight += event.v.abs[i].x;
-                }
-
-                if(totalWeight <= sensitivity)
-                {
-                    if(!firstStep)
-                    {
-                        done = true;
-                        send_status("DONE");
-                    }
-
-                    continue;
-                }
-
-
-                if(firstStep)
-                {
-                    firstStep = false;
-                    send_status("MEASURING");
-                }
-
-                // Skips the first readings when the user steps on the balance board
-                skipReadings -= 1;
-
-                if(skipReadings < 0)
-                {
-                    total.push_back(totalWeight);
-                    send_weight(total);
-                }
-            }
-
-            ready = false;
+        if(skipReadings < 0)
+        {
+            total.push_back(totalWeight);
+            send_weight(total);
         }
     }
 }
