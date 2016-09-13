@@ -21,10 +21,10 @@
 */
 
 var server = require('../web/server.js');
-var python = require('./start-python.js');
+//var python = require('./start-python.js');
 
 // Starts Wii-Scale python application
-python.start();
+//python.start();
 
 // Starts the webserver
 server.start();
