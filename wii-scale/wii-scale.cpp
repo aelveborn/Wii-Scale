@@ -1,7 +1,7 @@
 /*
  * This file is part of Wii-Scale
  * Copyright © 2015 Andreas Älveborn
- * Copyright © 2016 Matt Robinson
+ * Copyright © 2016-2017 Matt Robinson
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -160,6 +160,7 @@ int main(int argc, const char* argv[])
         }
         else if(board && !connectMode)
         {
+            board->Disconnect();
             board = nullptr;
             send_status("DISCONNECTED");
         }

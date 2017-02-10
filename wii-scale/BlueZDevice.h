@@ -1,6 +1,6 @@
 /*
  * This file is part of Wii-Scale
- * Copyright © 2016-2017 Matt Robinson
+ * Copyright © 2017 Matt Robinson
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,19 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include <xwiimote.h>
-
-class XWiiIface
+class BlueZDevice
 {
     public:
-        XWiiIface(std::string path);
-        ~XWiiIface();
-        bool HasBalanceBoard();
-        bool EnableBalanceBoard();
-        bool Dispatch(unsigned int mask, struct xwii_event *event);
+        BlueZDevice(std::string address);
         void Disconnect();
 
     private:
-        struct xwii_iface* device;
-        std::string address;
+        std::string path;
 };

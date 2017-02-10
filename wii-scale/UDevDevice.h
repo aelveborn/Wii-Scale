@@ -1,6 +1,6 @@
 /*
  * This file is part of Wii-Scale
- * Copyright © 2016-2017 Matt Robinson
+ * Copyright © 2017 Matt Robinson
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,19 +17,20 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include <xwiimote.h>
+#include <memory>
+#include <libudev.h>
+#include "UDev.h"
 
-class XWiiIface
+class UDevDevice
 {
     public:
-        XWiiIface(std::string path);
-        ~XWiiIface();
-        bool HasBalanceBoard();
-        bool EnableBalanceBoard();
-        bool Dispatch(unsigned int mask, struct xwii_event *event);
-        void Disconnect();
+        ~UDevDevice();
+        std::unique_ptr<UDevDevice> GetParent();
+        std::string GetAttrValue(std::string attr);
 
     private:
-        struct xwii_iface* device;
-        std::string address;
+        UDevDevice(struct udev_device *device);
+        struct udev_device *device;
+
+    friend std::unique_ptr<UDevDevice> UDev::DeviceFromSyspath(std::string syspath);
 };

@@ -1,6 +1,6 @@
 /*
  * This file is part of Wii-Scale
- * Copyright © 2016 Matt Robinson
+ * Copyright © 2016-2017 Matt Robinson
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,8 @@
 #include <system_error>
 #include <xwiimote.h>
 #include "XWiiIface.h"
+#include "UDevDevice.h"
+#include "BlueZDevice.h"
 
 XWiiIface::XWiiIface(std::string path)
 {
@@ -28,6 +30,16 @@ XWiiIface::XWiiIface(std::string path)
     if(ret)
     {
         throw std::system_error(-ret, std::system_category(), "Failed to connect to device " + path);
+    }
+
+    UDev udev;
+    std::unique_ptr<UDevDevice> board = udev.DeviceFromSyspath(path);
+    std::unique_ptr<UDevDevice> parent = board->GetParent();
+    this->address = parent->GetAttrValue("address");
+
+    if(this->address.empty())
+    {
+        throw std::runtime_error("Couldn't find address");
     }
 }
 
@@ -79,4 +91,10 @@ bool XWiiIface::Dispatch(unsigned int mask, struct xwii_event *event)
             return true;
         }
     }
+}
+
+void XWiiIface::Disconnect()
+{
+    BlueZDevice bluez(this->address);
+    bluez.Disconnect();
 }

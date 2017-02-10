@@ -1,6 +1,6 @@
 /*
  * This file is part of Wii-Scale
- * Copyright © 2016-2017 Matt Robinson
+ * Copyright © 2017 Matt Robinson
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,19 +17,32 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include <xwiimote.h>
+#include <system_error>
+#include "UDevDevice.h"
 
-class XWiiIface
+UDev::UDev()
 {
-    public:
-        XWiiIface(std::string path);
-        ~XWiiIface();
-        bool HasBalanceBoard();
-        bool EnableBalanceBoard();
-        bool Dispatch(unsigned int mask, struct xwii_event *event);
-        void Disconnect();
+    this->udev = udev_new();
 
-    private:
-        struct xwii_iface* device;
-        std::string address;
-};
+    if(this->udev == NULL)
+    {
+        throw std::system_error(-errno, std::system_category(), "Failed to create udev context");
+    }
+}
+
+UDev::~UDev()
+{
+    udev_unref(udev);
+}
+
+std::unique_ptr<UDevDevice> UDev::DeviceFromSyspath(std::string syspath)
+{
+    struct udev_device *device = udev_device_new_from_syspath(this->udev, syspath.c_str());
+
+    if(device == NULL)
+    {
+        throw std::system_error(errno, std::system_category(), "Failed to create device");
+    }
+
+    return std::unique_ptr<UDevDevice>(new UDevDevice(device));
+}
