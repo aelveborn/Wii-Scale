@@ -14,7 +14,6 @@
   "config": {
     "host": "localhost",
     "port": "8080",
-    "address": "",
     "calibrate": 0
   },
   "scripts": {

@@ -24,7 +24,6 @@ var PythonShell = require('python-shell');
 
 var host = process.env.npm_package_config_host;
 var port = process.env.npm_package_config_port;
-var address = process.env.npm_package_config_address;
 var calibrate = process.env.npm_package_config_calibrate;
 
 var options = {
@@ -32,7 +31,6 @@ var options = {
 	args: [
 		'-h ' + host,
 		'-p ' + port,
-		'-a ' + address,
 		'-c ' + calibrate
 		]
 }

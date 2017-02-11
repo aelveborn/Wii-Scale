@@ -48,7 +48,7 @@ Now the web server and Wii-Scale should be up and running at [http://localhost:8
 
 ## Configuration (optional)
 
-You can configure a different host, port, Wii Balance Board bluetooth address and calibration.
+You can configure a different host, port and calibration.
 
 ### Access the web interface from other computers
 
@@ -67,13 +67,6 @@ Define a custom port for the webserver (default is 8080):
 Define a different host for the webserver (default is localhost):
 
 	npm config set wii-scale:host localhost
-
-### Pair Wii Balance Board
-
-If you have paired your Wii balance board with your computer or Raspberry Pi you'll need to set the address to your Wii Balance Boards MAC address. If the MAC address is configured Wii-Scale wont scan for your Wii balance board, since it should be paired :). To pair your Wii Balance Board you can run `sudo python wii-scale/bind-setup.py`. You'll also need to configure Wii-Scale with your Wii Balance Boards MAC-address:
-
-	npm config set wii-scale:address 00:00:00:00:00
-
 
 ### Calibrate Wii-Scale
 

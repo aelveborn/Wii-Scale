@@ -99,7 +99,6 @@ int main(int argc, const char* argv[])
     std::string host;
     int port;
     int calibrate;
-    std::string address;
 
     options::options_description desc("wii-scale");
 
@@ -108,7 +107,6 @@ int main(int argc, const char* argv[])
         ("host,h", options::value<std::string>(&host)->default_value("localhost"), "host")
         ("port,p", options::value<int>(&port)->default_value(8080), "port")
         ("calibrate,c", options::value<int>(&calibrate)->default_value(0), "calibration kg")
-        ("address,a", options::value<std::string>(&address), "mac-address")
     ;
 
     options::variables_map map;
