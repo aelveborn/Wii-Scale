@@ -127,44 +127,32 @@ int main(int argc, const char* argv[])
     current_socket = client.socket();
 
     bool ready = false;
-    bool connectMode = false;
     bool firstStep;
     int skipReadings;
     std::vector<uint32_t> total;
 
     current_socket->on("wiiscale-connect", [&](sio::event& ev)
     {
-        std::cout << "Requested connect" << std::endl;
-        connectMode = true;
+        send_status("CONNECTING");
+        board = connect();
+
+        if(board)
+        {
+            send_status("CONNECTED");
+        }
     });
 
     current_socket->on("wiiscale-disconnect", [&](sio::event& ev)
     {
-        std::cout << "Requested disconnect" << std::endl;
-        connectMode = false;
+        if(board)
+        {
+            board->Disconnect();
+        }
     });
 
     // Scale
     for(;;)
     {
-        // Connect or disconnect from board when requested
-        if(!board && connectMode)
-        {
-            send_status("CONNECTING");
-            board = connect();
-
-            if(board)
-            {
-                send_status("CONNECTED");
-            }
-        }
-        else if(board && !connectMode)
-        {
-            board->Disconnect();
-            board = nullptr;
-            send_status("DISCONNECTED");
-        }
-
         if(!board)
         {
             // Waiting for connection or command
@@ -185,8 +173,17 @@ int main(int argc, const char* argv[])
 
         struct xwii_event event;
 
-        if(!board->Dispatch(XWII_EVENT_BALANCE_BOARD, &event))
+        if(!board->Dispatch(XWII_EVENT_WATCH | XWII_EVENT_BALANCE_BOARD, &event))
         {
+            continue;
+        }
+
+        if(event.type == XWII_EVENT_WATCH)
+        {
+            // Board has disconnected
+            send_status("DISCONNECTED");
+
+            board = nullptr;
             continue;
         }
 
