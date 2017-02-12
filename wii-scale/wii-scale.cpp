@@ -45,7 +45,7 @@ void send_status(std::string status)
     current_socket->emit("wiiscale-status", object);
 }
 
-void send_weight(std::vector<uint32_t> totals)
+void send_weight(std::vector<uint32_t> totals, double calibrate)
 {
     static std::chrono::high_resolution_clock::time_point lastTime;
     std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - lastTime);
@@ -66,7 +66,7 @@ void send_weight(std::vector<uint32_t> totals)
 
     total /= totals.size();
 
-    auto value = sio::double_message::create((double)total / 100);
+    auto value = sio::double_message::create(((double)total / 100) + calibrate);
     auto object = sio::object_message::create();
     std::static_pointer_cast<sio::object_message>(object)->insert("totalWeight", value);
 
@@ -98,7 +98,7 @@ int main(int argc, const char* argv[])
 {
     std::string host = "localhost";
     int port = 8080;
-    int calibrate = 0;
+    double calibrate = 0;
 
     options::options_description desc("wii-scale");
 
@@ -106,7 +106,7 @@ int main(int argc, const char* argv[])
         ("help", "Show this help")
         ("host,h", options::value<std::string>(&host), "host")
         ("port,p", options::value<int>(&port), "port")
-        ("calibrate,c", options::value<int>(&calibrate), "calibration kg")
+        ("calibrate,c", options::value<double>(&calibrate), "calibration kg")
     ;
 
     options::variables_map map;
@@ -212,7 +212,7 @@ int main(int argc, const char* argv[])
         if(skipReadings < 0)
         {
             total.push_back(totalWeight);
-            send_weight(total);
+            send_weight(total, calibrate);
         }
     }
 }
