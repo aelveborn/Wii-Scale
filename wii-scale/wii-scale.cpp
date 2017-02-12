@@ -96,17 +96,17 @@ std::unique_ptr<XWiiIface> connect()
 
 int main(int argc, const char* argv[])
 {
-    std::string host;
-    int port;
-    int calibrate;
+    std::string host = "localhost";
+    int port = 8080;
+    int calibrate = 0;
 
     options::options_description desc("wii-scale");
 
     desc.add_options()
         ("help", "Show this help")
-        ("host,h", options::value<std::string>(&host)->default_value("localhost"), "host")
-        ("port,p", options::value<int>(&port)->default_value(8080), "port")
-        ("calibrate,c", options::value<int>(&calibrate)->default_value(0), "calibration kg")
+        ("host,h", options::value<std::string>(&host), "host")
+        ("port,p", options::value<int>(&port), "port")
+        ("calibrate,c", options::value<int>(&calibrate), "calibration kg")
     ;
 
     options::variables_map map;
