@@ -162,7 +162,7 @@ int main(int argc, const char* argv[])
         if(!ready)
         {
             firstStep = true;
-            total.empty();
+            total.clear();
             skipReadings = 10;
 
             ready = true;
