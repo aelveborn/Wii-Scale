@@ -18,6 +18,7 @@
  */
 
 #include <system_error>
+#include <cstring>
 #include <xwiimote.h>
 #include "XWiiIface.h"
 #include "UDevDevice.h"
@@ -31,6 +32,11 @@ XWiiIface::XWiiIface(std::string path)
     {
         throw std::system_error(-ret, std::system_category(), "Failed to connect to device " + path);
     }
+
+    // Set up the pollfd structure ready for poll() in ::Dispatch
+    memset(fds, 0, sizeof(fds));
+    fds[0].fd = xwii_iface_get_fd(device);
+    fds[0].events = POLLIN;
 
     UDev udev;
     std::unique_ptr<UDevDevice> board = udev.DeviceFromSyspath(path);
@@ -70,25 +76,36 @@ bool XWiiIface::EnableBalanceBoard()
     return true;
 }
 
-bool XWiiIface::Dispatch(unsigned int mask, struct xwii_event *event)
+void XWiiIface::Dispatch(unsigned int mask, struct xwii_event *event)
 {
     for(;;)
     {
-        int ret = xwii_iface_dispatch(device, event, sizeof(*event));
+        // Block until an event is ready to be consumed
+        int ret = poll(fds, (sizeof(fds) / sizeof(fds[0])), -1);
 
-        if(ret == -EAGAIN)
+        if(ret < 0)
         {
-            return false;
+            throw std::system_error(-ret, std::system_category(), "Polling for events failed");
         }
 
-        if(ret)
+        for(;;)
         {
-            throw std::system_error(-ret, std::system_category(), "Read failed");
-        }
+            ret = xwii_iface_dispatch(device, event, sizeof(*event));
 
-        if (event->type & mask)
-        {
-            return true;
+            if(ret == -EAGAIN)
+            {
+                break;
+            }
+
+            if(ret)
+            {
+                throw std::system_error(-ret, std::system_category(), "Read failed");
+            }
+
+            if (event->type & mask)
+            {
+                return;
+            }
         }
     }
 }

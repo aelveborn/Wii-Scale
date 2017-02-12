@@ -18,6 +18,7 @@
  */
 
 #include <xwiimote.h>
+#include <poll.h>
 
 class XWiiIface
 {
@@ -26,10 +27,11 @@ class XWiiIface
         ~XWiiIface();
         bool HasBalanceBoard();
         bool EnableBalanceBoard();
-        bool Dispatch(unsigned int mask, struct xwii_event *event);
+        void Dispatch(unsigned int mask, struct xwii_event *event);
         void Disconnect();
 
     private:
         struct xwii_iface* device;
         std::string address;
+        struct pollfd fds[1];
 };

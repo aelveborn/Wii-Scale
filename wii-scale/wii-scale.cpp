@@ -170,11 +170,7 @@ int main(int argc, const char* argv[])
         }
 
         struct xwii_event event;
-
-        if(!board->Dispatch(XWII_EVENT_WATCH | XWII_EVENT_BALANCE_BOARD, &event))
-        {
-            continue;
-        }
+        board->Dispatch(XWII_EVENT_WATCH | XWII_EVENT_BALANCE_BOARD, &event);
 
         if(event.type == XWII_EVENT_WATCH)
         {
