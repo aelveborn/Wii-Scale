@@ -29,7 +29,7 @@ class UDevDevice
         std::string GetAttrValue(std::string attr);
 
     private:
-        UDevDevice(struct udev_device *device);
+        explicit UDevDevice(struct udev_device *device);
         struct udev_device *device;
 
     friend std::unique_ptr<UDevDevice> UDev::DeviceFromSyspath(std::string syspath);

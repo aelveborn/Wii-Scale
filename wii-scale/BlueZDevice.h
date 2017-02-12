@@ -20,7 +20,7 @@
 class BlueZDevice
 {
     public:
-        BlueZDevice(std::string address);
+        explicit BlueZDevice(std::string address);
         void Disconnect();
 
     private:

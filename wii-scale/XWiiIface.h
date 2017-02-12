@@ -23,7 +23,7 @@
 class XWiiIface
 {
     public:
-        XWiiIface(std::string path);
+        explicit XWiiIface(std::string path);
         ~XWiiIface();
         bool HasBalanceBoard();
         bool EnableBalanceBoard();
