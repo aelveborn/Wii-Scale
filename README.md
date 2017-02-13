@@ -1,16 +1,16 @@
 # Wii-Scale
 
-Wii-Scale turns your Wii Balance Board into a digital scale. Wii-Scale will automatically find your Wii Balance Board when you press the red sync button under it. All you have to do is just stand on it :) No boring console interface, watch your weight being calculated in realtime on a beautiful web insterface.
+Wii-Scale turns your Wii Balance Board into a digital scale. Wii-Scale will automatically find your Wii Balance Board when it is connected to your computer. All you have to do is just stand on it :) No boring console interface, watch your weight being calculated in realtime on a beautiful web insterface.
 
 You can also create multiple users for the whole family and see each members weight history. Wii-Scale runs on Linux and it also runs on a Raspberry Pi.
 
 ![Wii-Scale](https://github.com/aelveborn/Wii-Scale/blob/gh-pages/images/wiiscale_0_0_4_start.png?raw=true) 
 
-Wii-Scale is based on python, node.js, AngularJS and communicates over the lightning fast WebSocket protocol.
+Wii-Scale is based on C++, node.js, AngularJS and communicates over the lightning fast WebSocket protocol.
 
 ## Usage
 
-To connect to your Wii Balance Board you'll only need to press the green "Connect" button on the website and press the red sync button on your Wii Balance Board. The red sync button is located under the battery hatch. Wii-Scale will stay on an listen for your Wii Balance Board and promt you what to do in the web interface.
+Before you can use Wii-Scale, you need to have your balance board paired with your computer and connected.  To start, just press the green "Connect" button in Wii-Scale and follow the on-screen prompts in the web interface.
 
 ![Wii-Scale scanning for Wii Balance Board](https://github.com/aelveborn/Wii-Scale/blob/gh-pages/images/wiiscale_0_0_4_measuring.png?raw=true) 
 
@@ -31,13 +31,18 @@ To communicate with your Wii Balance Board you'll need a bluetooth 2.0 or 2.1 co
 Download latest version of Wii-Scale:
 
 	cd <your-directory>/
-	git clone https://github.com/aelveborn/Wii-Scale.git --depth 1
+	git clone https://github.com/aelveborn/Wii-Scale.git --recursive --depth 1
 	cd Wii-Scale/
+
+Allow non-root users to access balance board:
+
+	sudo cp wii-scale/70-wii-scales.rules /etc/udev/rules.d/
 
 Run install:
 
-	sudo python setup.py install
-	sudo npm install --production
+	mkdir build && cd build
+	cmake ../wii-scale && make
+	npm install --production
 
 
 ### Run
@@ -77,15 +82,16 @@ If the scales weight is off by any amout you can calibrate it by your own by set
 
 ## Update
 
-To update Wii-Scale, grab the latest version from github:
+To update Wii-Scale, grab the latest version from GitHub:
 
 	cd <your-directory>/Wii-Scale
 	git pull origin master
 
 Update Wii-Scale by running install:
 
-	sudo python setup.py install
-	sudo npm install --production
+	cd build
+	make
+	npm install --production
 
 
 ## For developers
@@ -119,9 +125,9 @@ Grunt commands:
 
 ## Libraries
 
-Wii-Scale uses the [wiiboard-simple](https://code.google.com/p/wiiboard-simple/) library and [xwiimote](https://github.com/dvdhrm/xwiimote)
+Wii-Scale uses the [xwiimote](https://github.com/dvdhrm/xwiimote), [socket.io-client-cpp](https://github.com/socketio/socket.io-client-cpp), [glibmm / giomm](https://developer.gnome.org/glibmm) and [libudev](https://www.freedesktop.org/software/systemd/man/libudev.html) libraries.
 
 
 ## Licence
 
-Wii-Scale is created and copyrighted by [Andreas Älveborn](http://aelveborn.com) and lincensed under GPL v2. [wiiboard-simple](https://code.google.com/p/wiiboard-simple/) is licensed under LGPL.
+Wii-Scale is created and copyrighted by [Andreas Älveborn](http://aelveborn.com) and lincensed under GPL v2.
