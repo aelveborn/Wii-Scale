@@ -4,6 +4,7 @@
 
 	This file is part of Wii-Scale
 	Copyright (C) 2015 Andreas Älveborn
+	Copyright (C) 2017 Matt Robinson
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -20,23 +21,26 @@
 	51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-var PythonShell = require('python-shell');
+var spawn = require('child_process').spawn;
 
 var host = process.env.npm_package_config_host;
 var port = process.env.npm_package_config_port;
 var calibrate = process.env.npm_package_config_calibrate;
 
-var options = {
-	scriptPath: 'wii-scale/',
-	args: [
-		'-h ' + host,
-		'-p ' + port,
-		'-c ' + calibrate
-		]
-}
+var args = [
+	'-h' + host,
+	'-p' + port,
+	'-c' + calibrate
+]
 
 exports.start = function() {
-	PythonShell.run('wii-scale.py', options, function (error) {
-		if (error) throw error;
+	child = spawn('build/wii-scale', args);
+
+	child.stderr.on('data', function (data) {
+		console.log(data.toString());
+	});
+
+	child.stdout.on('data', function (data) {
+		console.log(data.toString());
 	});
 }
