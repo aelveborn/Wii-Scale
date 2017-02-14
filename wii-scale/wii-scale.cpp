@@ -22,6 +22,7 @@
 #include <iostream>
 #include <string>
 #include <chrono>
+#include <deque>
 
 #include <sio_client.h>
 #include <xwiimote.h>
@@ -36,6 +37,9 @@ std::unique_ptr<XWiiIface> board;
 
 const int sensitivity = 3000; // as 10ths of a kg
 
+// Number of standard deviations less than the mean to discard at start
+const int stdDevCutoff = 2;
+
 void send_status(std::string status)
 {
     std::cout << "Sending status: " << status << std::endl;
@@ -45,7 +49,7 @@ void send_status(std::string status)
     current_socket->emit("wiiscale-status", object);
 }
 
-void send_weight(std::vector<uint32_t> totals, double calibrate)
+void send_weight(std::deque<uint32_t> *totals, double calibrate)
 {
     static std::chrono::high_resolution_clock::time_point lastTime;
     std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - lastTime);
@@ -57,16 +61,34 @@ void send_weight(std::vector<uint32_t> totals, double calibrate)
     }
 
     lastTime = std::chrono::high_resolution_clock::now();
-    uint32_t total = 0;
 
-    for(auto iter = totals.begin(); iter != totals.end(); ++iter)
+    // First, calculate the mean
+    double mean = std::accumulate(totals->begin(), totals->end(), 0.0) / totals->size();
+
+    // Next, calculate the standard deviation
+    uint32_t variance = 0;
+
+    for(auto iter = totals->begin(); iter != totals->end(); ++iter)
     {
-        total += *iter;
+        variance += pow(*iter - mean, 2);
     }
 
-    total /= totals.size();
+    variance /= totals->size();
+    double stdev = sqrt(variance);
 
-    auto value = sio::double_message::create(((double)total / 100) + calibrate);
+    /* Finally, discard any values from the start of measuring that are
+     * significantly lower from the average than the standard deviation.
+     * This prevents values generated when stepping on to the balance board
+     * from dragging the mean down irrespective of how quickly the user steps.
+     */
+    double threshold = (mean - (stdev * stdDevCutoff));
+
+    while(totals->at(0) < threshold)
+    {
+        totals->pop_front();
+    }
+
+    auto value = sio::double_message::create(((double)mean / 100) + calibrate);
     auto object = sio::object_message::create();
     std::static_pointer_cast<sio::object_message>(object)->insert("totalWeight", value);
 
@@ -126,8 +148,7 @@ int main(int argc, const char* argv[])
 
     bool ready = false;
     bool firstStep;
-    int skipReadings;
-    std::vector<uint32_t> total;
+    std::deque<uint32_t> total;
 
     current_socket->on("wiiscale-connect", [&](sio::event& ev)
     {
@@ -163,7 +184,6 @@ int main(int argc, const char* argv[])
         {
             firstStep = true;
             total.clear();
-            skipReadings = 10;
 
             ready = true;
             send_status("READY");
@@ -206,13 +226,7 @@ int main(int argc, const char* argv[])
             send_status("MEASURING");
         }
 
-        // Skips the first readings when the user steps on the balance board
-        skipReadings -= 1;
-
-        if(skipReadings < 0)
-        {
-            total.push_back(totalWeight);
-            send_weight(total, calibrate);
-        }
+        total.push_back(totalWeight);
+        send_weight(&total, calibrate);
     }
 }
