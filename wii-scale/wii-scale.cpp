@@ -42,8 +42,6 @@ const int stdDevCutoff = 2;
 
 void send_status(std::string status)
 {
-    std::cout << "Sending status: " << status << std::endl;
-
     auto object = sio::object_message::create();
     std::static_pointer_cast<sio::object_message>(object)->insert("status", status);
     current_socket->emit("wiiscale-status", object);
@@ -112,7 +110,6 @@ std::unique_ptr<XWiiIface> connect()
         return device;
     }
 
-    std::cerr << "Unable to find a balance board" << std::endl;
     return nullptr;
 }
 
@@ -155,10 +152,7 @@ int main(int argc, const char* argv[])
         send_status("CONNECTING");
         board = connect();
 
-        if(board)
-        {
-            send_status("CONNECTED");
-        }
+        send_status(board ? "CONNECTED" : "NO DEVICE FOUND");
     });
 
     current_socket->on("wiiscale-disconnect", [&](sio::event& ev)
