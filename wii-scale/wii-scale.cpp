@@ -23,6 +23,7 @@
 #include <string>
 #include <chrono>
 #include <deque>
+#include <numeric>
 
 #include <sio_client.h>
 #include <xwiimote.h>
