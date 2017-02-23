@@ -28,6 +28,8 @@ BlueZDevice::BlueZDevice(std::string address)
         throw std::invalid_argument("address is empty");
     }
 
+    Gio::init();
+
     auto managerProxy = Gio::DBus::Proxy::create_for_bus_sync(Gio::DBus::BUS_TYPE_SYSTEM,
                                                               "org.bluez",
                                                               "/",
