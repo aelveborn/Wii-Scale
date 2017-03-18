@@ -37,34 +37,50 @@ BlueZDevice::BlueZDevice(std::string address)
 
     auto managedObjs = managerProxy->call_sync("GetManagedObjects");
 
-    auto derived = Glib::VariantBase::cast_dynamic<Glib::Variant<std::map<std::string,std::map<std::string,std::map<std::string,Glib::VariantBase>>>>>(managedObjs.get_child());
+    Glib::VariantIter objectsIter(managedObjs.get_child());
+    Glib::VariantContainerBase container;
 
-    auto dict = derived.get();
-
-    for (const auto& objectPair : dict)
+    while(objectsIter.next_value(container))
     {
-        auto devPair = objectPair.second.find("org.bluez.Device1");
+        Glib::Variant<std::string> objectPath;
+        container.get_child(objectPath, 0);
 
-        if(devPair == objectPair.second.end())
+        Glib::VariantIter objectPairsIter(container.get_child(1));
+
+        while(objectPairsIter.next_value(container))
         {
-            // No Device1 entry
-            continue;
-        }
+            Glib::Variant<std::string> key;
+            container.get_child(key, 0);
 
-        auto addrPair = devPair->second.find("Address");
+            if(key.get() != "org.bluez.Device1")
+            {
+                continue;
+            }
 
-        if(addrPair == devPair->second.end())
-        {
-            // No Address entry
-            continue;
-        }
+            Glib::VariantIter valuePairsIter(container.get_child(1));
 
-        auto checkAddr = Glib::VariantBase::cast_dynamic<Glib::Variant<std::string>>(addrPair->second).get();
+            while(valuePairsIter.next_value(container))
+            {
+                Glib::Variant<std::string> valueName;
+                container.get_child(valueName, 0);
 
-        if(strcasecmp(checkAddr.c_str(), address.c_str()) == 0)
-        {
-            this->path = objectPair.first;
-            return;
+                if(valueName.get() != "Address")
+                {
+                    continue;
+                }
+
+                Glib::Variant<Glib::VariantBase> valueOuter;
+                container.get_child(valueOuter, 1);
+
+                Glib::Variant<std::string> checkAddr;
+                valueOuter.get(checkAddr);
+
+                if(strcasecmp(checkAddr.get().c_str(), address.c_str()) == 0)
+                {
+                    this->path = objectPath.get();
+                    return;
+                }
+            }
         }
     }
 
