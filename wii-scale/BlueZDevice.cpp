@@ -17,6 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#include <iostream>
 #include <giomm.h>
 #include <strings.h>
 #include "BlueZDevice.h"
@@ -30,58 +31,68 @@ BlueZDevice::BlueZDevice(std::string address)
 
     Gio::init();
 
-    auto managerProxy = Gio::DBus::Proxy::create_for_bus_sync(Gio::DBus::BUS_TYPE_SYSTEM,
-                                                              "org.bluez",
-                                                              "/",
-                                                              "org.freedesktop.DBus.ObjectManager");
-
-    auto managedObjs = managerProxy->call_sync("GetManagedObjects");
-
-    Glib::VariantIter objectsIter(managedObjs.get_child());
-    Glib::VariantContainerBase container;
-
-    while(objectsIter.next_value(container))
+    try
     {
-        Glib::Variant<std::string> objectPath;
-        container.get_child(objectPath, 0);
+        auto managerProxy = Gio::DBus::Proxy::create_for_bus_sync(Gio::DBus::BUS_TYPE_SYSTEM,
+                                                                  "org.bluez",
+                                                                  "/",
+                                                                  "org.freedesktop.DBus.ObjectManager");
 
-        Glib::VariantIter objectPairsIter(container.get_child(1));
+        auto managedObjs = managerProxy->call_sync("GetManagedObjects");
 
-        while(objectPairsIter.next_value(container))
+        Glib::VariantIter objectsIter(managedObjs.get_child());
+        Glib::VariantContainerBase container;
+
+        while(objectsIter.next_value(container))
         {
-            Glib::Variant<std::string> key;
-            container.get_child(key, 0);
+            Glib::Variant<std::string> objectPath;
+            container.get_child(objectPath, 0);
 
-            if(key.get() != "org.bluez.Device1")
+            Glib::VariantIter objectPairsIter(container.get_child(1));
+
+            while(objectPairsIter.next_value(container))
             {
-                continue;
-            }
+                Glib::Variant<std::string> key;
+                container.get_child(key, 0);
 
-            Glib::VariantIter valuePairsIter(container.get_child(1));
-
-            while(valuePairsIter.next_value(container))
-            {
-                Glib::Variant<std::string> valueName;
-                container.get_child(valueName, 0);
-
-                if(valueName.get() != "Address")
+                if(key.get() != "org.bluez.Device1")
                 {
                     continue;
                 }
 
-                Glib::Variant<Glib::VariantBase> valueOuter;
-                container.get_child(valueOuter, 1);
+                Glib::VariantIter valuePairsIter(container.get_child(1));
 
-                Glib::Variant<std::string> checkAddr;
-                valueOuter.get(checkAddr);
-
-                if(strcasecmp(checkAddr.get().c_str(), address.c_str()) == 0)
+                while(valuePairsIter.next_value(container))
                 {
-                    this->path = objectPath.get();
-                    return;
+                    Glib::Variant<std::string> valueName;
+                    container.get_child(valueName, 0);
+
+                    if(valueName.get() != "Address")
+                    {
+                        continue;
+                    }
+
+                    Glib::Variant<Glib::VariantBase> valueOuter;
+                    container.get_child(valueOuter, 1);
+
+                    Glib::Variant<std::string> checkAddr;
+                    valueOuter.get(checkAddr);
+
+                    if(strcasecmp(checkAddr.get().c_str(), address.c_str()) == 0)
+                    {
+                        this->path = objectPath.get();
+                        return;
+                    }
                 }
             }
         }
+    }
+    catch(Gio::DBus::Error &dbusError)
+    {
+        // Dump details of the DBus error to stderr to aid troubleshooting
+        std::cerr << dbusError.what() << std::endl;
+
+        throw;
     }
 
     throw std::runtime_error("Could not find path for Bluetooth address " + address);
