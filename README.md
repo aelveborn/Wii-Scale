@@ -38,6 +38,7 @@ Run install:
 
 	sudo python setup.py install
 	sudo npm install --production
+	grunt build
 
 
 ### Run

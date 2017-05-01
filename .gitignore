@@ -111,11 +111,3 @@ docs/_build/
 # PyBuilder
 target/
 *.pyc
-
-
-#########################
-# Custom
-#########################
-
-# Exclude web build files
-!web/public/build/
