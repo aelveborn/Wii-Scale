@@ -35,7 +35,7 @@ UDev::~UDev()
     udev_unref(udev);
 }
 
-std::unique_ptr<UDevDevice> UDev::DeviceFromSyspath(std::string syspath)
+std::unique_ptr<UDevDevice> UDev::DeviceFromSyspath(const std::string &syspath)
 {
     struct udev_device *device = udev_device_new_from_syspath(this->udev, syspath.c_str());
 

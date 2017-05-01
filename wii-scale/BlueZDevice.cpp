@@ -23,7 +23,7 @@
 #include "BlueZDevice.h"
 
 template <class retType>
-retType GetPropertyValue(Glib::VariantBase properties, std::string name)
+retType GetPropertyValue(Glib::VariantBase properties, const std::string &name)
 {
     Glib::VariantIter valuePairsIter(properties);
     Glib::VariantContainerBase container;
@@ -50,7 +50,7 @@ retType GetPropertyValue(Glib::VariantBase properties, std::string name)
     return retType();
 }
 
-BlueZDevice::BlueZDevice(std::string address, std::string name)
+BlueZDevice::BlueZDevice(const std::string &address, const std::string &name)
 {
     if(address.empty() && name.empty())
     {

@@ -27,7 +27,7 @@ class UDev
     public:
         UDev();
         ~UDev();
-        std::unique_ptr<UDevDevice> DeviceFromSyspath(std::string syspath);
+        std::unique_ptr<UDevDevice> DeviceFromSyspath(const std::string &syspath);
 
     private:
         struct udev *udev;

@@ -24,7 +24,7 @@
 #include "UDevDevice.h"
 #include "BlueZDevice.h"
 
-XWiiIface::XWiiIface(std::string path)
+XWiiIface::XWiiIface(const std::string &path)
 {
     int ret = xwii_iface_new(&device, path.c_str());
 

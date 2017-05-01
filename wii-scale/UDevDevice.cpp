@@ -50,7 +50,7 @@ std::unique_ptr<UDevDevice> UDevDevice::GetParent()
     return std::unique_ptr<UDevDevice>(new UDevDevice(parent));
 }
 
-std::string UDevDevice::GetAttrValue(std::string name)
+std::string UDevDevice::GetAttrValue(const std::string &name)
 {
     const char *attrVal = udev_device_get_sysattr_value(this->device, name.c_str());
 

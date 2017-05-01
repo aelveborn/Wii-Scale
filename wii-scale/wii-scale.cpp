@@ -41,7 +41,7 @@ const int sensitivity = 3000; // as 10ths of a kg
 // Number of standard deviations less than the mean to discard at start
 const int stdDevCutoff = 2;
 
-void send_status(std::string status)
+void send_status(const std::string &status)
 {
     auto object = sio::object_message::create();
     std::static_pointer_cast<sio::object_message>(object)->insert("status", status);
