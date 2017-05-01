@@ -52,11 +52,11 @@ std::unique_ptr<UDevDevice> UDevDevice::GetParent()
 
 std::string UDevDevice::GetAttrValue(std::string name)
 {
-    const char *addrVal = udev_device_get_sysattr_value(this->device, name.c_str());
+    const char *attrVal = udev_device_get_sysattr_value(this->device, name.c_str());
 
-    if(addrVal != NULL)
+    if(attrVal != NULL)
     {
-        return std::string(addrVal);
+        return std::string(attrVal);
     }
     else
     {
