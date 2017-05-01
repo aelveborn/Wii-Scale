@@ -22,11 +22,39 @@
 #include <strings.h>
 #include "BlueZDevice.h"
 
-BlueZDevice::BlueZDevice(std::string address)
+template <class retType>
+retType GetPropertyValue(Glib::VariantBase properties, std::string name)
 {
-    if(address.empty())
+    Glib::VariantIter valuePairsIter(properties);
+    Glib::VariantContainerBase container;
+
+    while(valuePairsIter.next_value(container))
     {
-        throw std::invalid_argument("address is empty");
+        Glib::Variant<std::string> valueName;
+        container.get_child(valueName, 0);
+
+        if(valueName.get() != name)
+        {
+            continue;
+        }
+
+        Glib::Variant<Glib::VariantBase> valueOuter;
+        container.get_child(valueOuter, 1);
+
+        Glib::Variant<retType> value;
+        valueOuter.get(value);
+
+        return value.get();
+    }
+
+    return retType();
+}
+
+BlueZDevice::BlueZDevice(std::string address, std::string name)
+{
+    if(address.empty() && name.empty())
+    {
+        throw std::invalid_argument("both address and name are empty - one is required");
     }
 
     Gio::init();
@@ -60,25 +88,38 @@ BlueZDevice::BlueZDevice(std::string address)
                     continue;
                 }
 
-                Glib::VariantIter valuePairsIter(container.get_child(1));
+                auto properties = container.get_child(1);
 
-                while(valuePairsIter.next_value(container))
+                if(!GetPropertyValue<bool>(properties, "Connected"))
                 {
-                    Glib::Variant<std::string> valueName;
-                    container.get_child(valueName, 0);
+                    continue;
+                }
 
-                    if(valueName.get() != "Address")
+                if(address.empty())
+                {
+                    std::string checkName = GetPropertyValue<std::string>(properties, "Name");
+
+                    if(checkName.empty())
                     {
                         continue;
                     }
 
-                    Glib::Variant<Glib::VariantBase> valueOuter;
-                    container.get_child(valueOuter, 1);
+                    if(checkName == name)
+                    {
+                        this->path = objectPath.get();
+                        return;
+                    }
+                }
+                else
+                {
+                    std::string checkAddr = GetPropertyValue<std::string>(properties, "Address");
 
-                    Glib::Variant<std::string> checkAddr;
-                    valueOuter.get(checkAddr);
+                    if(checkAddr.empty())
+                    {
+                        continue;
+                    }
 
-                    if(strcasecmp(checkAddr.get().c_str(), address.c_str()) == 0)
+                    if(strcasecmp(checkAddr.c_str(), address.c_str()) == 0)
                     {
                         this->path = objectPath.get();
                         return;
@@ -95,7 +136,14 @@ BlueZDevice::BlueZDevice(std::string address)
         throw;
     }
 
-    throw std::runtime_error("Could not find path for Bluetooth address " + address);
+    if(address.empty())
+    {
+        throw std::runtime_error("Could not find path for Bluetooth name \"" + name + "\"");
+    }
+    else
+    {
+        throw std::runtime_error("Could not find path for Bluetooth address \"" + address + "\"");
+    }
 }
 
 void BlueZDevice::Disconnect()

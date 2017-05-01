@@ -42,11 +42,6 @@ XWiiIface::XWiiIface(std::string path)
     std::unique_ptr<UDevDevice> board = udev.DeviceFromSyspath(path);
     std::unique_ptr<UDevDevice> parent = board->GetParent();
     this->address = parent->GetAttrValue("address");
-
-    if(this->address.empty())
-    {
-        throw std::runtime_error("Couldn't find address");
-    }
 }
 
 XWiiIface::~XWiiIface()
@@ -112,6 +107,6 @@ void XWiiIface::Dispatch(unsigned int mask, struct xwii_event *event)
 
 void XWiiIface::Disconnect()
 {
-    BlueZDevice bluez(this->address);
+    BlueZDevice bluez(this->address, "Nintendo RVL-WBC-01");
     bluez.Disconnect();
 }
