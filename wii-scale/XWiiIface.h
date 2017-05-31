@@ -34,4 +34,5 @@ class XWiiIface
         struct xwii_iface* device;
         std::string address;
         struct pollfd fds[1];
+        bool sentDisconnect = false;
 };

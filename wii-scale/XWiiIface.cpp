@@ -107,6 +107,11 @@ void XWiiIface::Dispatch(unsigned int mask, struct xwii_event *event)
 
 void XWiiIface::Disconnect()
 {
-    BlueZDevice bluez(this->address, "Nintendo RVL-WBC-01");
-    bluez.Disconnect();
+    if(!this->sentDisconnect)
+    {
+        BlueZDevice bluez(this->address, "Nintendo RVL-WBC-01");
+        bluez.Disconnect();
+
+        this->sentDisconnect = true;
+    }
 }
