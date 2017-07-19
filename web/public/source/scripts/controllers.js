@@ -136,7 +136,7 @@
 
             socket.on(socketCommands.WIISCALE_STATUS, function(data) {
                 switch(data.status) {
-                    case "SYNC":
+                    case "CONNECTING":
                         $scope.status.dismiss();
                         $scope.status.search = true;
 
@@ -150,9 +150,6 @@
 
                         $scope.controls.connect = true;
                         $scope.controls.disconnect = false;
-                        break;
-
-                    case "CONNECTING":
                         break;
 
                     case "CONNECTED":

@@ -4,6 +4,7 @@
 
 	This file is part of Wii-Scale
 	Copyright (C) 2015 Andreas Älveborn
+	Copyright (C) 2017 Matt Robinson
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -21,10 +22,10 @@
 */
 
 var server = require('../web/server.js');
-var python = require('./start-python.js');
+var backend = require('./start-backend.js');
 
-// Starts Wii-Scale python application
-python.start();
+// Starts Wii-Scale application
+backend.start();
 
 // Starts the webserver
 server.start();
