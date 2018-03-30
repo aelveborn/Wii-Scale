@@ -1,0 +1,3 @@
+[submodule "wii-scale/socket.io-client-cpp"]
+	path = wii-scale/socket.io-client-cpp
+	url = git@github.com:socketio/socket.io-client-cpp.git
