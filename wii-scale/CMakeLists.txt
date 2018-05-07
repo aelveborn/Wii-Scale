@@ -1,5 +1,5 @@
 # This file is part of Wii-Scale
-# Copyright © 2017 Matt Robinson
+# Copyright © 2017-2018 Matt Robinson
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ find_package(Boost REQUIRED COMPONENTS program_options)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GIOMM REQUIRED giomm-2.4)
 
-add_subdirectory(socket.io-client-cpp)
+add_subdirectory(socket.io-client-cpp EXCLUDE_FROM_ALL)
 
 INCLUDE_DIRECTORIES(socket.io-client-cpp/src ${GIOMM_INCLUDE_DIRS})
 
