@@ -240,16 +240,14 @@
 							series: [[]]
 						};
 
-						for (var i = $scope.entries.list.length - 1; i >= 0; i--) {
+						var graphStart = Math.min($scope.entries.list.length, 14);
+
+						for (var i = graphStart - 1; i >= 0; i--) {
 							data.labels.push(formatDate($scope.entries.list[i].dateTime));
 							data.series[set].push($scope.entries.list[i].weight);
-
-							if(($scope.entries.list.length - i) === 14) {
-								i = 0;
-							}
 						}
 
-						return data;						
+						return data;
 					};
 
 					function drawChart(data) {
