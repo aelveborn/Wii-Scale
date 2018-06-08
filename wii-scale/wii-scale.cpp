@@ -53,9 +53,9 @@ void send_weight(std::deque<uint32_t> *totals, double calibrate)
     static std::chrono::high_resolution_clock::time_point lastTime;
     std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - lastTime);
 
-    if(ms.count() < 100)
+    if(ms.count() < 50)
     {
-        // Only send the weight every 0.1 of a second
+        // Only send the weight every 50 milliseconds
         return;
     }
 
