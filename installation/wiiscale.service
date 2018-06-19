@@ -1,0 +1,13 @@
+[Unit]
+Description=Wii-Scale
+After=network.target
+
+[Service]
+Type=simple
+User=wiiscale
+WorkingDirectory=/opt/Wii-Scale
+ExecStart=/usr/bin/npm start
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
