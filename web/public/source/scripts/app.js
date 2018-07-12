@@ -24,6 +24,7 @@
     'use strict';
 
     angular.module('app', [
+        'ngCookies',
         'ngRoute',
         'ngAnimate',
         'btford.socket-io',
@@ -32,14 +33,21 @@
         'app.services'
     ]).
 
-    run(['$rootScope', 'entries', 'client', function ($rootScope, entries, client) {
-        var defaultUser = {
+    run(['$rootScope', '$cookies', 'entries', 'client', function ($rootScope, $cookies, entries, client) {
+        $rootScope.defaultUser = {
             name: "Guest"
         };
-        $rootScope.defaultUser = defaultUser;
-        $rootScope.selectedUser = defaultUser;
-        entries.getUserEntries(defaultUser);
+        
+        
         client.load();
+        $rootScope.selectedUser = $cookies.getObject('selectedUser');
+        
+        if ( !$rootScope.selectedUser ) {
+            $rootScope.selectedUser = $rootScope.defaultUser;
+            $cookies.putObject("selectedUser", $rootScope.selectedUser);
+        }
+        
+        entries.getUserEntries($rootScope.selectedUser);
     }]).
 
     config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
