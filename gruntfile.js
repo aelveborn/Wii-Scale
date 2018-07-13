@@ -63,6 +63,7 @@ module.exports = function (grunt) {
 						'<%= path.vendor %>angular-animate/angular-animate.js',
 						'<%= path.vendor %>chartist/dist/chartist.js',
 						'<%= path.vendor %>chartist-plugin-pointlabels/dist/chartist-plugin-pointlabels.js',
+						'<%= path.vendor %>save-csv/save-csv.js',
 						'<%= path.src.scripts %>**/*.js'
 						]
 				}
