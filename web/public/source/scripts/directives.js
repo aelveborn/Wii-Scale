@@ -121,7 +121,7 @@
 						users.remove(user);
 
 						$rootScope.selectedUser = $rootScope.defaultUser;
-						$cookies.putObject("selectedUser", $rootScope.selectedUser);
+						$cookies.putObject("selectedUser", $rootScope.defaultUser);
 						entries.getUserEntries($rootScope.defaultUser);
 					};
 
