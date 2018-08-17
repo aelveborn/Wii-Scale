@@ -102,19 +102,14 @@
 					
 					function dateFormat(dtstr) {
 						var dt = new Date(dtstr);
-						return [ padLeft(dt.getMonth()+1),
-									padLeft(dt.getDate()),
-									dt.getFullYear()].join('/') +
-								' ' +
-								[ padLeft(dt.getHours()),
-									padLeft(dt.getMinutes()),
-									padLeft(dt.getSeconds())].join(':');
+						return [ padLeft(dt.getMonth()+1), padLeft(dt.getDate()), dt.getFullYear()].join('/') + ' ' +
+							[ padLeft(dt.getHours()), padLeft(dt.getMinutes()),	padLeft(dt.getSeconds())].join(':');
 					}
 					
 					$scope.controls.download = function() {
 						saveCsv($.map($scope.entries.list, function(value, index) {
-							return {"Timestamp (ISO 8601)": dateFormat(value.dateTime), "Username": value.userName, "Weight (kg)": value.weight};
-						}),{
+							return {"Timestamp": dateFormat(value.dateTime), "Username": value.userName, "Weight (kg)": value.weight};
+						}), {
 							filename: "Wii-Scale_export_" + $scope.entries.list[0].userName + ".csv"
 						});
 					};
