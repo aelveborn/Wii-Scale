@@ -23,12 +23,14 @@
 var app = require('express')();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
+var cookieParser = require('cookie-parser');
 var socket = require('./server/routes/socket.js')(io);
 var routes = require('./server/routes/index.js');
 
 var host = process.env.npm_package_config_host;
 var port = process.env.npm_package_config_port;
 
+app.use(cookieParser());
 app.use('/static', require('express').static('web/public/build'));
 
 // Routes
