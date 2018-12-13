@@ -75,10 +75,11 @@ Define a different host for the webserver (default is localhost):
 
 ### Calibrate Wii-Scale
 
-If the scales weight is off by any amout you can calibrate it by your own by setting the calibration i Kg. So `npm config set wii-scale:calibrate 2`will add 2kg to your weight, default is set to 0.
+If the scales weight is off by any amout you can adjust it by setting the calibration in Kg. So `npm config set wii-scale:calibrate 2` will add 2kg to your weight, default is 0.
 
 	npm config set wii-scale:calibrate 0
 
+If you need to set a negative calibration value, you need to include `--` before it so that the value is stored correctly, e.g. `npm config set wii-scale:calibrate -- -2`
 
 ## Update
 
