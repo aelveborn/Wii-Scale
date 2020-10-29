@@ -96,7 +96,7 @@ Update Wii-Scale by running install:
 
 ## For developers
 
-If you whant to make a code contribution, run a `grunt clean-build` before you commit and create a pull request to the dev branch. This is important since the dev branch is used for testing.
+If you whant to make a code contribution, run a `grunt clean-build` before you commit and create a pull request.
 
 ### Developer install
 
