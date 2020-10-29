@@ -60,6 +60,7 @@ module.exports = function (grunt) {
 						'<%= path.vendor %>angular/angular.js',
 						'<%= path.vendor %>angular-socket-io/socket.js',
 						'<%= path.vendor %>angular-route/angular-route.js',
+						'<%= path.vendor %>angular-cookies/angular-cookies.js',
 						'<%= path.vendor %>angular-animate/angular-animate.js',
 						'<%= path.vendor %>chartist/dist/chartist.js',
 						'<%= path.vendor %>chartist-plugin-pointlabels/dist/chartist-plugin-pointlabels.js',

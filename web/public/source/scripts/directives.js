@@ -128,7 +128,7 @@
 			};
 		}]).
 
-		directive('deleteUserModal', ['$rootScope', 'entries', 'users', function ($rootScope, entries, users){
+		directive('deleteUserModal', ['$rootScope', '$cookies', 'entries', 'users', function ($rootScope, $cookies, entries, users){
 			return {
 				scope: {
 					user: '=',
@@ -141,6 +141,7 @@
 						users.remove(user);
 
 						$rootScope.selectedUser = $rootScope.defaultUser;
+						$cookies.putObject("selectedUser", $rootScope.defaultUser);
 						entries.getUserEntries($rootScope.defaultUser);
 					};
 
