@@ -20,7 +20,7 @@
 		<li class="list-group-item animate-ng-show" ng-show="controls.showMore || controls.showReset">
 			<div class="row">
 
-				<div class="col-xs-6">
+				<div class="col-xs-4">
 					<a href="#" class="show-more" ng-click="controls.more()" ng-show="controls.showMore">
 						<small>
 							<i class="fa fa-history"></i>
@@ -29,7 +29,16 @@
 					</a>
 				</div>
 
-				<div class="col-xs-6 text-right">
+				<div class="col-xs-4">
+					<a href="#" class="download" ng-click="controls.download()" ng-show="controls.showDownload">
+						<small>
+							<i class="fa fa-download"></i>
+							Download
+						</small>
+					</a>
+				</div>
+				
+				<div class="col-xs-4 text-right">
 					<a href="#" class="reset" ng-click="controls.reset()" ng-show="controls.showReset">
 						<small>
 							Reset

@@ -21,8 +21,11 @@
     "start": "node scripts/start.js"
   },
   "dependencies": {
+    "angular-cookies": "^1.7.2",
+    "cookie-parser": "^1.4.3",
     "express": "4.12.0",
     "lokijs": "1.3.7",
+    "save-csv": "^4.0.7",
     "socket.io": "1.3.4"
   },
   "devDependencies": {

@@ -62,6 +62,7 @@
 					$scope.quantity = defaultQuantity;
 					$scope.controls = {};
 					$scope.controls.showMore = false;
+					$scope.controls.showDownload = true;
 					$scope.controls.showReset = false;
 
 					function controlsHandler() {
@@ -93,6 +94,25 @@
 						$scope.quantity = defaultQuantity;
 						controlsHandler();
 					};
+					
+					// padLeft and dateFormat could be replaced with an angular filter
+					function padLeft(num) {
+						return (num<=9) ? "0" + num.toString() : num.toString();
+					}
+					
+					function dateFormat(dtstr) {
+						var dt = new Date(dtstr);
+						return [ padLeft(dt.getMonth()+1), padLeft(dt.getDate()), dt.getFullYear()].join('/') + ' ' +
+							[ padLeft(dt.getHours()), padLeft(dt.getMinutes()),	padLeft(dt.getSeconds())].join(':');
+					}
+					
+					$scope.controls.download = function() {
+						saveCsv($.map($scope.entries.list, function(value, index) {
+							return {"Timestamp": dateFormat(value.dateTime), "Username": value.userName, "Weight (kg)": value.weight};
+						}), {
+							filename: "Wii-Scale_export_" + $scope.entries.list[0].userName + ".csv"
+						});
+					};
 
 					$scope.controls.remove = function(entry) {
 						$scope.removeEntry = entry;
@@ -108,7 +128,7 @@
 			};
 		}]).
 
-		directive('deleteUserModal', ['$rootScope', 'entries', 'users', function ($rootScope, entries, users){
+		directive('deleteUserModal', ['$rootScope', '$cookies', 'entries', 'users', function ($rootScope, $cookies, entries, users){
 			return {
 				scope: {
 					user: '=',
@@ -121,6 +141,7 @@
 						users.remove(user);
 
 						$rootScope.selectedUser = $rootScope.defaultUser;
+						$cookies.putObject("selectedUser", $rootScope.defaultUser);
 						entries.getUserEntries($rootScope.defaultUser);
 					};
 
