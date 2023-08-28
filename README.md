@@ -20,7 +20,7 @@ The weight is calculated by taking the mean of 50 readings. Wii-Scale will ignor
 
 Wii-Scale runs most likely only on Linux. Follow these guides to install Wii-Scale on Ubuntu or Raspberry Pi:
 
-- [How to install Wii-Scale on Ubuntu](https://github.com/aelveborn/Wii-Scale/wiki/Guide:-How-to-install-Wii-Scale-on-Ubuntu)
+- [How to install Wii-Scale on Debian, Ubuntu & derivatives](https://github.com/aelveborn/Wii-Scale/wiki/Guide:-How-to-install-Wii-Scale-on-Debian,-Ubuntu-and-derivatives)
 - [How to install Wii-Scale on Raspberry Pi](https://github.com/aelveborn/Wii-Scale/wiki/Guide:-How-to-install-Wii-Scale-on-Raspberry-Pi)
 
 To communicate with your Wii Balance Board you'll need a bluetooth 2.0 or 2.1 compatible device. You can find [compatible devices here](http://wiibrew.org/wiki/List_of_Working_Bluetooth_Devices). Wii-Scale is based on the following dependencies `Python 2`, `Python-pip` and `Node.js with npm` and `BlueZ` bluetooth stack.
